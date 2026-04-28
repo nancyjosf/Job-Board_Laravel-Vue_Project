@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules;
-// ضيفي الـ Controllers بتوعك هنا فوق
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\JobController;
 
@@ -33,23 +32,14 @@ function allowedEndpointsByRole(UserRole $role): array
     };
 }
 
-/*
-|--------------------------------------------------------------------------
-| Job Discovery Routes (الخاصة بيكي)
-|--------------------------------------------------------------------------
-*/
+
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/jobs', [JobController::class, 'index']); // البحث والفلترة
-Route::get('/jobs/{jobListing}', [JobController::class, 'show']); // تفاصيل الوظيفة
+Route::get('/jobs', [JobController::class, 'index']); 
+Route::get('/jobs/{jobListing}', [JobController::class, 'show']); 
 
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes (شغل شذى)
-|--------------------------------------------------------------------------
-*/
+
 Route::post('/register', function (Request $request) {
-    // ... كود الـ register زي ما هو ...
     $validated = $request->validate([
         'name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
@@ -75,7 +65,6 @@ Route::post('/register', function (Request $request) {
 });
 
 Route::post('/login', function (Request $request) {
-    // ... كود الـ login زي ما هو ...
     $validated = $request->validate([
         'email' => ['required', 'email'],
         'password' => ['required', 'string'],
@@ -99,8 +88,6 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
-// ... باقي الـ middleware routes (user, logout, dashboards) بتكمل تحت زي ما هي ...
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
-// إلخ...

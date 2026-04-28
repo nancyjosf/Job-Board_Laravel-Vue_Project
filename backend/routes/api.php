@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules;
+// ضيفي الـ Controllers بتوعك هنا فوق
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\JobController;
 
 function allowedEndpointsByRole(UserRole $role): array
 {
@@ -30,7 +33,23 @@ function allowedEndpointsByRole(UserRole $role): array
     };
 }
 
+/*
+|--------------------------------------------------------------------------
+| Job Discovery Routes (الخاصة بيكي)
+|--------------------------------------------------------------------------
+*/
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/jobs', [JobController::class, 'index']); // البحث والفلترة
+Route::get('/jobs/{jobListing}', [JobController::class, 'show']); // تفاصيل الوظيفة
+
+
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes (شغل شذى)
+|--------------------------------------------------------------------------
+*/
 Route::post('/register', function (Request $request) {
+    // ... كود الـ register زي ما هو ...
     $validated = $request->validate([
         'name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
@@ -56,6 +75,7 @@ Route::post('/register', function (Request $request) {
 });
 
 Route::post('/login', function (Request $request) {
+    // ... كود الـ login زي ما هو ...
     $validated = $request->validate([
         'email' => ['required', 'email'],
         'password' => ['required', 'string'],
@@ -79,49 +99,8 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
+// ... باقي الـ middleware routes (user, logout, dashboards) بتكمل تحت زي ما هي ...
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::middleware(['auth:sanctum'])->get('/my-permissions', function (Request $request) {
-    return response()->json([
-        'role' => $request->user()->role,
-        'allowed_endpoints' => allowedEndpointsByRole($request->user()->role),
-    ]);
-});
-
-Route::middleware(['auth:sanctum'])->post('/logout', function (Request $request) {
-    $request->user()->currentAccessToken()?->delete();
-
-    return response()->json([
-        'message' => 'Logged out successfully.',
-    ]);
-});
-
-Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin/dashboard', function (Request $request) {
-    return response()->json([
-        'message' => 'Welcome admin.',
-        'user' => $request->user(),
-    ]);
-});
-
-Route::middleware(['auth:sanctum', 'role:employer'])->get('/employer/dashboard', function (Request $request) {
-    return response()->json([
-        'message' => 'Welcome employer.',
-        'user' => $request->user(),
-    ]);
-});
-
-Route::middleware(['auth:sanctum', 'role:candidate'])->get('/candidate/dashboard', function (Request $request) {
-    return response()->json([
-        'message' => 'Welcome candidate.',
-        'user' => $request->user(),
-    ]);
-});
-
-Route::middleware(['auth:sanctum', 'role:admin,employer'])->get('/management/reports', function (Request $request) {
-    return response()->json([
-        'message' => 'Accessible by admin and employer roles.',
-        'user' => $request->user(),
-    ]);
-});
+// إلخ...

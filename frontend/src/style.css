@@ -7,20 +7,27 @@
   body,
   #app {
     @apply min-h-screen;
-  
     background-attachment: fixed; 
   }
 
   body {
-  
     @apply text-slate-50 antialiased;
     background-color: #0f172a; 
+  }
+
+  /* 🟢 إضافة قوية: لضمان ظهور الكلام في أي Input في الموقع */
+  input, select, textarea {
+    @apply text-white !important; /* إجبار اللون الأبيض */
+    caret-color: #6366f1 !important; /* لون مؤشر الكتابة إنديغو */
+  }
+
+  input::placeholder {
+    @apply text-white/30 !important; /* لون النص التوضيحي */
   }
 }
 
 @layer components {
   .app-bg {
-   
     background: 
       radial-gradient(circle at top right, rgba(99, 102, 241, 0.2), transparent 40%),
       radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.15), transparent 40%),
@@ -41,8 +48,10 @@
     @apply group-hover:border-indigo-500/50 group-hover:bg-black/80;
   }
 
+  /* 🟢 تعديل الـ field-ui ليكون أكثر وضوحاً في الكتابة */
   .field-ui {
-    @apply w-full rounded-2xl border border-white/10 bg-black/20 px-6 py-4 text-white placeholder:text-white/30 outline-none transition backdrop-blur-xl focus:border-indigo-500/50 focus:bg-black/40;
+    @apply w-full rounded-2xl border border-white/10 bg-black/40 px-6 py-4 text-white placeholder:text-white/30 outline-none transition backdrop-blur-xl focus:border-indigo-500/50 focus:bg-black/60 focus:ring-4 focus:ring-indigo-500/10;
+    color: white !important;
   }
 
   .btn-ui {
@@ -58,10 +67,26 @@
     text-shadow: 0 4px 12px rgba(0,0,0,0.5); 
   }
 
+  /* 🔵 إضافة لتنسيق نتائج البحث (العدد) */
+  .results-count-text {
+    @apply text-xl font-black uppercase tracking-[0.2em] text-indigo-400;
+  }
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;  
     overflow: hidden;
   }
+}
+
+/* 🪄 سكرول بار شيك يتناسب مع الـ Glassmorphism */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-950;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-indigo-600/50 rounded-full border-2 border-slate-950 hover:bg-indigo-500 transition-colors;
 }

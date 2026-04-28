@@ -15,14 +15,13 @@
     background-color: #0f172a; 
   }
 
-  /* 🟢 إضافة قوية: لضمان ظهور الكلام في أي Input في الموقع */
   input, select, textarea {
-    @apply text-white !important; /* إجبار اللون الأبيض */
-    caret-color: #6366f1 !important; /* لون مؤشر الكتابة إنديغو */
+    @apply text-white !important; 
+    caret-color: #6366f1 !important; 
   }
 
   input::placeholder {
-    @apply text-white/30 !important; /* لون النص التوضيحي */
+    @apply text-white/30 !important;
   }
 }
 
@@ -48,7 +47,6 @@
     @apply group-hover:border-indigo-500/50 group-hover:bg-black/80;
   }
 
-  /* 🟢 تعديل الـ field-ui ليكون أكثر وضوحاً في الكتابة */
   .field-ui {
     @apply w-full rounded-2xl border border-white/10 bg-black/40 px-6 py-4 text-white placeholder:text-white/30 outline-none transition backdrop-blur-xl focus:border-indigo-500/50 focus:bg-black/60 focus:ring-4 focus:ring-indigo-500/10;
     color: white !important;
@@ -67,7 +65,6 @@
     text-shadow: 0 4px 12px rgba(0,0,0,0.5); 
   }
 
-  /* 🔵 إضافة لتنسيق نتائج البحث (العدد) */
   .results-count-text {
     @apply text-xl font-black uppercase tracking-[0.2em] text-indigo-400;
   }
@@ -80,7 +77,6 @@
   }
 }
 
-/* 🪄 سكرول بار شيك يتناسب مع الـ Glassmorphism */
 ::-webkit-scrollbar {
   width: 8px;
 }

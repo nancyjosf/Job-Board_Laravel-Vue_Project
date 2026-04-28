@@ -6,6 +6,7 @@ const props = defineProps({
   modelValue: {
     type: Object,
     default: () => ({
+      search: '', 
       category_id: '',
       location: '',
       work_type: '',
@@ -25,6 +26,7 @@ function setField(key, value) {
 
 function onReset() {
   emit('update:modelValue', {
+    search: '',
     category_id: '',
     location: '',
     work_type: '',
@@ -66,6 +68,19 @@ function onReset() {
 
       <div class="space-y-6">
         
+        <div class="filter-group">
+          <label class="filter-label">Search Keywords</label>
+          <div class="relative">
+            <input 
+              class="filter-field pl-11" 
+              :value="modelValue.search" 
+              placeholder="Job title, keywords..." 
+              @input="setField('search', $event.target.value)" 
+            />
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-lg">🔍</span>
+          </div>
+        </div>
+
         <div class="filter-group">
           <label class="filter-label">Job Category</label>
           <div class="relative">
@@ -146,52 +161,14 @@ function onReset() {
 </template>
 
 <style scoped>
-/* 🎨 تنسيق الزجاج الفاتح المطابق للكروت */
 .filter-card-glass {
-  background: rgba(255, 255, 255, 0.08); /* درجة شفافة فاتحة */
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
-
-.filter-group {
-  @apply flex flex-col gap-2;
-}
-
-.filter-label {
-  @apply text-[11px] font-black text-white/70 uppercase tracking-[0.2em] ml-1 mb-1;
-}
-
-.filter-field {
-  /* الحقول شفافة جداً لتظهر الخلفية من تحتها */
-  @apply w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-sm font-black text-white 
-         transition-all duration-300 outline-none backdrop-blur-md;
-}
-
-.filter-field:focus {
-  @apply bg-white/15 border-white/40 ring-4 ring-white/5;
-}
-
-.filter-field::placeholder {
-  @apply text-white/30;
-}
-
-.select-arrow {
-  @apply absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none;
-  width: 0; height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 6px solid rgba(255, 255, 255, 0.6);
-}
-
-select option {
-  @apply bg-slate-900 text-white font-bold py-2;
-}
-
-/* السكرول بار */
-select::-webkit-scrollbar {
-  width: 4px;
-}
-select::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-}
+.filter-group { @apply flex flex-col gap-2; }
+.filter-label { @apply text-[11px] font-black text-white/70 uppercase tracking-[0.2em] ml-1 mb-1; }
+.filter-field { @apply w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-sm font-black text-white transition-all duration-300 outline-none backdrop-blur-md; }
+.filter-field:focus { @apply bg-white/15 border-white/40 ring-4 ring-white/5; }
+.select-arrow { @apply absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid rgba(255, 255, 255, 0.6); }
+select option { @apply bg-slate-900 text-white font-bold py-2; }
 </style>

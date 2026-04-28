@@ -8,8 +8,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'search', 'clear'])
 
-function onInput(event) {
+function handleInput(event) {
   emit('update:modelValue', event.target.value)
+}
+
+function onClear() {
+  emit('update:modelValue', '')
+  emit('clear')
 }
 </script>
 
@@ -20,32 +25,34 @@ function onInput(event) {
     :transition="{ duration: 0.8, easing: 'ease-out' }"
     class="relative z-20 w-full"
   >
-    <div class="search-container p-3 rounded-[2.5rem] border border-white/50 bg-white/30 backdrop-blur-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 hover:shadow-[0_40px_80px_-20px_rgba(79,70,229,0.15)]">
+    <div class="search-container p-3 rounded-[2.5rem] border border-white/10 bg-slate-900/40 backdrop-blur-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] transition-all duration-500">
       
       <div class="flex flex-col md:flex-row items-center gap-3">
         
         <div class="relative flex-1 w-full group">
           <div class="absolute left-6 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400 group-focus-within:text-indigo-600 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400 group-focus-within:text-white transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           
           <input
+            type="text"
             :value="props.modelValue"
             :placeholder="props.placeholder"
             class="search-input"
-            @input="onInput"
+            @input="handleInput"
             @keydown.enter.prevent="emit('search')"
           />
 
           <transition name="fade">
             <button 
               v-if="props.modelValue" 
-              @click="emit('clear')"
-              class="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-slate-100 rounded-full transition-all"
+              @click="onClear"
+              type="button"
+              class="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-full transition-all z-30"
             >
-              <span class="text-slate-400">✕</span>
+              <span class="text-white hover:text-indigo-300 font-bold">✕</span>
             </button>
           </transition>
         </div>
@@ -66,15 +73,6 @@ function onInput(event) {
             </span>
             <div class="btn-glow"></div>
           </Motion>
-
-          <button 
-            class="hidden md:flex p-4 rounded-2xl bg-white/80 border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition-all shadow-sm"
-            title="Advanced Search"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-            </svg>
-          </button>
         </div>
 
       </div>
@@ -84,7 +82,7 @@ function onInput(event) {
       <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Trending:</span>
       <div class="flex gap-4">
         <button v-for="tag in ['Vue.js', 'Laravel', 'Remote']" :key="tag" 
-                class="text-[11px] font-bold text-indigo-600/70 hover:text-indigo-600 transition-colors">
+                class="text-[11px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors">
           #{{ tag }}
         </button>
       </div>
@@ -93,18 +91,20 @@ function onInput(event) {
 </template>
 
 <style scoped>
-/* 🪄 التصميم البصري (Advanced Styling) */
 .search-container {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.4) 100%);
 }
 
 .search-input {
-  @apply w-full pl-16 pr-12 py-5 rounded-[2rem] bg-white/40 border border-white/60 text-lg font-bold text-slate-900 
-         placeholder:text-slate-400 outline-none transition-all duration-500 focus:bg-white focus:ring-[12px] focus:ring-indigo-500/5 focus:border-indigo-500/30 shadow-inner;
+  @apply w-full pl-16 pr-12 py-5 rounded-[2rem] bg-slate-950/60 border border-white/10 text-lg font-bold outline-none transition-all duration-500 focus:bg-slate-900 focus:ring-[12px] focus:ring-indigo-500/10 focus:border-indigo-500/50 shadow-2xl;
+  
+  color: #ffffff !important;         
+  caret-color: #818cf8 !important;   
+  -webkit-text-fill-color: white !important;
 }
 
 .search-btn-primary {
-  @apply relative w-full md:w-44 py-5 rounded-[1.8rem] bg-indigo-600 text-white font-black text-sm uppercase tracking-widest overflow-hidden transition-all duration-500 shadow-xl shadow-indigo-200 cursor-pointer;
+  @apply relative w-full md:w-44 py-5 rounded-[1.8rem] bg-indigo-600 text-white font-black text-sm uppercase tracking-widest overflow-hidden transition-all duration-500 shadow-xl cursor-pointer;
 }
 
 .search-btn-primary:hover {
@@ -117,17 +117,8 @@ function onInput(event) {
   background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
 }
 
-.search-btn-primary:hover .btn-glow {
-  @apply opacity-100;
-}
-
-/* حركة التلاشي */
+.search-btn-primary:hover .btn-glow { @apply opacity-100; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
-
-/* تحسين الخط في الـ placeholder */
-::placeholder {
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
+::placeholder { font-weight: 600; letter-spacing: -0.01em; color: #64748b; }
 </style>

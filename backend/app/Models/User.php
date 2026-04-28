@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,6 +37,19 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
         ];
+    }
+
+    public function hasRole(UserRole|string ...$roles): bool
+    {
+        $currentRole = $this->role instanceof UserRole ? $this->role->value : (string) $this->role;
+
+        $allowedRoles = array_map(
+            static fn (UserRole|string $role): string => $role instanceof UserRole ? $role->value : $role,
+            $roles,
+        );
+
+        return in_array($currentRole, $allowedRoles, true);
     }
 }

@@ -85,7 +85,6 @@ const isActive = (id) => String(props.activeId) === String(id);
   @apply relative px-7 py-3.5 rounded-2xl font-black text-sm transition-all duration-500 overflow-hidden cursor-pointer outline-none border border-white/10;
   background: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.7);
-  /* تم تصحيح السطر هنا بإضافة @apply */
   @apply backdrop-blur-md;
 }
 

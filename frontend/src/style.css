@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #app {
+    @apply min-h-screen;
+  
+    background-attachment: fixed; 
+  }
+
+  body {
+  
+    @apply text-slate-50 antialiased;
+    background-color: #0f172a; 
+  }
+}
+
+@layer components {
+  .app-bg {
+   
+    background: 
+      radial-gradient(circle at top right, rgba(99, 102, 241, 0.2), transparent 40%),
+      radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.15), transparent 40%),
+      linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), 
+      url('@/assets/images/your-bg.jpg'); 
+    
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  .card-ui {
+    @apply rounded-[3rem] border border-white/10 bg-black/40 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6)] backdrop-blur-[40px] transition-all duration-500;
+  }
+
+  .tag-modern {
+    @apply px-5 py-2.5 rounded-2xl bg-black/60 border border-white/10 text-xs font-[1000] text-white uppercase tracking-tighter backdrop-blur-2xl transition-all;
+    @apply group-hover:border-indigo-500/50 group-hover:bg-black/80;
+  }
+
+  .field-ui {
+    @apply w-full rounded-2xl border border-white/10 bg-black/20 px-6 py-4 text-white placeholder:text-white/30 outline-none transition backdrop-blur-xl focus:border-indigo-500/50 focus:bg-black/40;
+  }
+
+  .btn-ui {
+    @apply inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 py-4 text-xs font-[1000] text-white uppercase tracking-[0.2em] transition hover:bg-white/10 backdrop-blur-md disabled:opacity-40;
+  }
+
+  .btn-primary-ui {
+    @apply border-transparent bg-indigo-600 text-white font-[1000] shadow-lg shadow-indigo-900/20 hover:bg-indigo-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transform hover:-translate-y-0.5 active:scale-95 transition-all duration-300;
+  }
+
+  .text-glass {
+    @apply text-white antialiased;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.5); 
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+  }
+}

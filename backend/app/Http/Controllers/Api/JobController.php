@@ -14,7 +14,7 @@ class JobController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $validated = $request->validate([
-            'search' => ['nullable', 'string', 'max:200'], // تم تحديث الاسم ليتطابق مع الـ Vue Component
+            'search' => ['nullable', 'string', 'max:200'], 
             'category_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:120'],
             'work_type' => ['nullable', 'in:remote,onsite,hybrid'],
@@ -46,7 +46,7 @@ class JobController extends Controller
                 $sub->where('title', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%")
                     ->orWhere('company_name', 'like', "%{$search}%")
-                    ->orWhere('requirements', 'like', "%{$search}%"); // إضافة البحث في المتطلبات أيضاً
+                    ->orWhere('requirements', 'like', "%{$search}%");
             });
         }
 

@@ -16,6 +16,7 @@ const loading = ref(false)
 const error = ref('')
 
 const q = ref('')
+
 const filters = ref({
   category_id: '',
   location: '',
@@ -30,7 +31,8 @@ const jobs = computed(() => jobsResponse.value?.data ?? [])
 const meta = computed(() => jobsResponse.value?.meta ?? null)
 
 function syncLocalFromQuery(query) {
-  q.value = query.q ? String(query.q) : ''
+  q.value = query.search ? String(query.search) : (query.q ? String(query.q) : '')
+  
   filters.value = {
     category_id: query.category_id ? String(query.category_id) : '',
     location: query.location ? String(query.location) : '',
@@ -44,7 +46,7 @@ function syncLocalFromQuery(query) {
 
 function buildQuery({ page = 1 } = {}) {
   const query = {
-    q: q.value.trim() || undefined,
+    search: q.value.trim() || undefined, 
     category_id: filters.value.category_id || undefined,
     location: filters.value.location.trim() || undefined,
     work_type: filters.value.work_type || undefined,
@@ -70,15 +72,30 @@ async function loadJobsFromRoute() {
 }
 
 function updateQuery(next) { router.replace({ query: next }) }
-function onSearch() { updateQuery(buildQuery({ page: 1 })) }
-function onClearSearch() { q.value = ''; onSearch(); }
+
+function onSearch() {
+  console.log("Searching for:", q.value); 
+  updateQuery(buildQuery({ page: 1 }));
+}
+
+function onClearSearch() { 
+  q.value = ''; 
+  onSearch(); 
+}
+
 function onApplyFilters() { onSearch(); }
 function onResetFilters() { onSearch(); }
 function onSelectCategory(id) { filters.value.category_id = String(id || ''); onSearch(); }
 function goToPage(p) { updateQuery(buildQuery({ page: p })) }
 
-watch(() => route.query, () => { syncLocalFromQuery(route.query); loadJobsFromRoute(); }, { immediate: true, deep: true })
-onMounted(async () => { categories.value = await fetchCategories() })
+watch(() => route.query, () => { 
+  syncLocalFromQuery(route.query); 
+  loadJobsFromRoute(); 
+}, { immediate: true, deep: true })
+
+onMounted(async () => { 
+  categories.value = await fetchCategories() 
+})
 </script>
 
 <template>
@@ -96,7 +113,13 @@ onMounted(async () => { categories.value = await fetchCategories() })
       <aside class="space-y-10 sticky top-12">
         <div class="p-12 rounded-[3.5rem] border border-white/10 bg-black/55 backdrop-blur-3xl shadow-2xl">
           <h3 class="text-white font-black text-xs uppercase tracking-[0.4em] mb-10 opacity-40">Discovery Tool</h3>
-          <SearchBar v-model="q" @search="onSearch" @clear="onClearSearch" />
+          
+          <SearchBar 
+            v-model="q" 
+            @search="onSearch" 
+            @clear="onClearSearch" 
+          />
+
           <div class="mt-12 pt-12 border-t border-white/10">
             <FiltersPanel v-model="filters" :categories="categories" @apply="onApplyFilters" @reset="onResetFilters" />
           </div>
@@ -125,6 +148,12 @@ onMounted(async () => { categories.value = await fetchCategories() })
           <div v-for="n in 6" :key="n" class="h-[450px] rounded-[4rem] bg-white/5 animate-pulse border border-white/5"></div>
         </div>
 
+        <div v-else-if="jobs.length === 0" class="flex flex-col items-center justify-center py-20 text-center">
+            <div class="text-9xl mb-8">🔍</div>
+            <h3 class="text-4xl font-black text-white">No matches found</h3>
+            <p class="text-white/40 text-xl mt-4">Try adjusting your keywords or filters.</p>
+        </div>
+
         <div v-else class="grid gap-10 md:grid-cols-1 xl:grid-cols-2 items-stretch">
           <Motion 
             v-for="(job, index) in jobs" 
@@ -140,12 +169,12 @@ onMounted(async () => { categories.value = await fetchCategories() })
             >
               <div class="relative z-10 flex flex-col h-full">
                 <div class="flex justify-between items-start mb-10">
-                  <div class="w-20 h-20 rounded-[1.5rem] bg-indigo-600 flex items-center justify-center text-white text-4xl font-[1000] shadow-2xl flex-shrink-0 overflow-hidden">
+                  <div class="w-20 h-20 rounded-[1.5rem] bg-indigo-600 flex items-center justify-center text-white text-4xl font-[1000] shadow-2xl flex-shrink-0 overflow-hidden border border-white/10">
                     <img 
                       v-if="job.company_logo" 
                       :src="job.company_logo" 
+                      @error="(e) => e.target.src = 'https://ui-avatars.com/api/?name=' + (job.companyName || 'J')"
                       class="w-full h-full object-cover"
-                      alt="Logo"
                     />
                     <span v-else>{{ job.companyName?.[0] || 'J' }}</span>
                   </div>
@@ -203,7 +232,6 @@ onMounted(async () => { categories.value = await fetchCategories() })
 h1, h2, h3 {
   letter-spacing: -0.04em;
   -webkit-font-smoothing: antialiased;
-  text-shadow: none !important;
 }
 
 .line-clamp-2 {

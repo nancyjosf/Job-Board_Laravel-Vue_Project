@@ -11,14 +11,10 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class JobController extends Controller
 {
-    /**
-     * عرض قائمة الوظائف مع الفلترة والترتيب
-     */
     public function index(Request $request): AnonymousResourceCollection
     {
-        // 1. التحقق من البيانات القادمة من الطلب
         $validated = $request->validate([
-            'q' => ['nullable', 'string', 'max:200'],
+            'search' => ['nullable', 'string', 'max:200'], // تم تحديث الاسم ليتطابق مع الـ Vue Component
             'category_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:120'],
             'work_type' => ['nullable', 'in:remote,onsite,hybrid'],
@@ -29,98 +25,59 @@ class JobController extends Controller
             'per_page' => ['nullable', 'integer', 'min:1', 'max:50'],
         ]);
 
-        // 2. بناء الاستعلام الأساسي (مع جلب القسم لتحسين الأداء)
-        $query = JobListing::query()
-            ->with('category'); 
+        $query = JobListing::query()->with('category'); 
 
-        // 3. تطبيق الفلاتر والبحث
         $query = $this->applySearchAndFilters($query, $validated);
 
-        // 4. تطبيق الترتيب
         $this->applySorting($query, $validated['sort'] ?? null);
 
-        // 5. تنفيذ الترقيم (Pagination)
         $perPage = (int) ($validated['per_page'] ?? 12);
         $jobs = $query->paginate($perPage)->withQueryString();
 
         return JobListingResource::collection($jobs);
     }
 
-    /**
-     * عرض تفاصيل وظيفة واحدة
-     */
-    public function show(JobListing $jobListing): JobListingResource
-    {
-        // التأكد من أن الوظيفة منشورة (إذا كان لديك Scope باسم public يمكنك استخدامه)
-        // abort_unless($jobListing->status === 'published', 404);
-
-        // زيادة عدد المشاهدات
-        $jobListing->increment('views_count');
-
-        // تحميل القسم إذا لم يكن محملًا
-        $jobListing->loadMissing('category');
-
-        return new JobListingResource($jobListing);
-    }
-
-    /**
-     * دالة خاصة لتطبيق البحث والفلترة
-     */
+   
     private function applySearchAndFilters(Builder $query, array $validated): Builder
     {
-        // البحث بالنص (q)
-        if (!empty($validated['q'])) {
-            $q = trim((string) $validated['q']);
-            $query->where(function (Builder $sub) use ($q) {
-                $sub->where('title', 'like', "%{$q}%")
-                    ->orWhere('description', 'like', "%{$q}%")
-                    ->orWhere('company_name', 'like', "%{$q}%");
+        if (!empty($validated['search'])) {
+            $search = trim((string) $validated['search']);
+            $query->where(function (Builder $sub) use ($search) {
+                $sub->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('company_name', 'like', "%{$search}%")
+                    ->orWhere('requirements', 'like', "%{$search}%"); // إضافة البحث في المتطلبات أيضاً
             });
         }
 
-        // الفلترة بالتصنيف (Category) - السطر اللي بيحل مشكلتك
         if (!empty($validated['category_id'])) {
             $query->where('category_id', (int) $validated['category_id']);
         }
 
-        // الفلترة بالموقع
         if (!empty($validated['location'])) {
             $loc = trim((string) $validated['location']);
             $query->where('location', 'like', "%{$loc}%");
         }
 
-        // نوع العمل (Remote, etc)
         if (!empty($validated['work_type'])) {
             $query->where('work_type', (string) $validated['work_type']);
         }
 
-        // مستوى الخبرة
         if (!empty($validated['experience_level'])) {
             $query->where('experience_level', (string) $validated['experience_level']);
         }
 
-        // الحد الأدنى للراتب
         if (isset($validated['salary_min'])) {
-            $query->where(function (Builder $sub) use ($validated) {
-                $sub->whereNull('salary_min')
-                    ->orWhere('salary_min', '>=', (int) $validated['salary_min']);
-            });
+            $query->where('salary_min', '>=', (int) $validated['salary_min']);
         }
 
-        // الحد الأقصى للراتب
         if (isset($validated['salary_max'])) {
-            $query->where(function (Builder $sub) use ($validated) {
-                $sub->whereNull('salary_max')
-                    ->orWhere('salary_max', '<=', (int) $validated['salary_max']);
-            });
+            $query->where('salary_max', '<=', (int) $validated['salary_max']);
         }
 
         return $query;
     }
 
-    /**
-     * دالة خاصة للترتيب
-     */
     private function applySorting(Builder $query, ?string $sort): void
     {
         match ($sort) {
@@ -129,5 +86,12 @@ class JobController extends Controller
             'salary_asc' => $query->orderByRaw('salary_min is null, salary_min asc'),
             default => $query->orderBy('created_at', 'desc'),
         };
+    }
+
+    public function show(JobListing $jobListing): JobListingResource
+    {
+        $jobListing->increment('views_count');
+        $jobListing->loadMissing('category');
+        return new JobListingResource($jobListing);
     }
 }

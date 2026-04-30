@@ -52,4 +52,9 @@ class User extends Authenticatable
 
         return in_array($currentRole, $allowedRoles, true);
     }
+
+    public function jobs()
+{
+    return $this->hasMany(JobListing::class);
+}
 }

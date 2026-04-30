@@ -131,4 +131,45 @@ class JobController extends Controller
         'job' => new JobListingResource($job->load('category')),
     ], 201);
 }
+
+
+public function myJobs(Request $request)
+{
+    $jobs = JobListing::where('user_id', $request->user()->id)
+        ->with('category')
+        ->latest()
+        ->get();
+
+    return JobListingResource::collection($jobs);
+}
+
+public function update(Request $request, JobListing $job)
+{
+    
+    if ($job->user_id !== $request->user()->id) {
+        return response()->json([
+            'message' => 'Unauthorized'
+        ], 403);
+    }
+
+    
+    $validated = $request->validate([
+        'category_id' => ['sometimes', 'exists:categories,id'],
+        'title' => ['sometimes', 'string', 'max:255'],
+        'company_name' => ['nullable', 'string', 'max:255'],
+        'description' => ['sometimes', 'string'],
+        'location' => ['nullable', 'string'],
+        'work_type' => ['sometimes', 'in:remote,onsite,hybrid'],
+        'experience_level' => ['nullable', 'in:junior,mid,senior,lead'],
+        'salary_min' => ['nullable', 'integer'],
+        'salary_max' => ['nullable', 'integer'],
+    ]);
+
+    $job->update($validated);
+
+    return response()->json([
+        'message' => 'Job updated successfully',
+        'job' => new JobListingResource($job->load('category'))
+    ]);
+}
 }

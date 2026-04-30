@@ -87,11 +87,17 @@ Route::post('/login', function (Request $request) {
         'allowed_endpoints' => allowedEndpointsByRole($user->role),
     ]);
 });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/employer/jobs', [JobController::class, 'store']);
+});
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/employer/jobs', [JobController::class, 'myJobs']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/employer/jobs', [JobController::class, 'store']);
+    Route::put('/employer/jobs/{job}', [JobController::class, 'update']);
 });

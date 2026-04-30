@@ -97,7 +97,7 @@ class JobController extends Controller
 
 
     public function store(Request $request)
-{
+{     
     $validated = $request->validate([
         'category_id' => ['required', 'exists:categories,id'],
         'title' => ['required', 'string', 'max:255'],
@@ -110,11 +110,21 @@ class JobController extends Controller
         'salary_max' => ['nullable', 'integer'],
     ]);
 
-    $job = JobListing::create([
-        ...$validated,
-        'user_id' => $request->user()->id, 
-        'status' => 'draft',
-    ]);
+   $job = JobListing::create([
+      ...$validated,
+    'category_id' => $request->category_id,
+    'title' => $request->title,
+    'company_name' => $request->company_name,
+    'description' => $request->description,
+    'location' => $request->location,
+    'work_type' => $request->work_type,
+    'experience_level' => $request->experience_level,
+    'salary_min' => $request->salary_min,
+    'salary_max' => $request->salary_max,
+
+    
+    'user_id' => $request->user()->id,
+]);
 
     return response()->json([
         'message' => 'Job created successfully',

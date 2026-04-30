@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedTinyInteger('role')
-                ->default(User::ROLE_CANDIDATE)
+               ->default(0)
                 ->after('password');
         });
     }

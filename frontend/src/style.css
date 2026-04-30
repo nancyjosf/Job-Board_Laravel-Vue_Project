@@ -22,6 +22,7 @@
 
   input::placeholder {
     @apply text-white/30 !important;
+    @apply text-white/30 !important; 
   }
 }
 

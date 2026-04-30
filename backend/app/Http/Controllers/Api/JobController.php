@@ -94,4 +94,31 @@ class JobController extends Controller
         $jobListing->loadMissing('category');
         return new JobListingResource($jobListing);
     }
+
+
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'category_id' => ['required', 'exists:categories,id'],
+        'title' => ['required', 'string', 'max:255'],
+        'company_name' => ['nullable', 'string', 'max:255'],
+        'description' => ['required', 'string'],
+        'location' => ['nullable', 'string'],
+        'work_type' => ['required', 'in:remote,onsite,hybrid'],
+        'experience_level' => ['nullable', 'in:junior,mid,senior,lead'],
+        'salary_min' => ['nullable', 'integer'],
+        'salary_max' => ['nullable', 'integer'],
+    ]);
+
+    $job = JobListing::create([
+        ...$validated,
+        'user_id' => $request->user()->id, 
+        'status' => 'draft',
+    ]);
+
+    return response()->json([
+        'message' => 'Job created successfully',
+        'job' => new JobListingResource($job->load('category')),
+    ], 201);
+}
 }

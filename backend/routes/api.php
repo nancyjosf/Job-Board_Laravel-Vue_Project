@@ -91,7 +91,3 @@ Route::post('/login', function (Request $request) {
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
-<<<<<<< HEAD
-=======
-// إلخ...
->>>>>>> feature/public-job-discovery

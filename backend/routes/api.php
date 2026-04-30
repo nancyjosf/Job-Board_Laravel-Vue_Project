@@ -101,3 +101,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/employer/jobs/{job}', [JobController::class, 'update']);
 });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::delete('/employer/jobs/{job}', [JobController::class, 'destroy']);
+});

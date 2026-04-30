@@ -172,4 +172,19 @@ public function update(Request $request, JobListing $job)
         'job' => new JobListingResource($job->load('category'))
     ]);
 }
+
+public function destroy(Request $request, JobListing $job)
+{
+    if ($job->user_id !== auth()->id()) {
+        return response()->json([
+            'message' => 'Unauthorized'
+        ], 403);
+    }
+
+    $job->delete();
+
+    return response()->json([
+        'message' => 'Job deleted successfully'
+    ]);
+}
 }

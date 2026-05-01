@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\JobListingResource;
 use App\Models\JobListing;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -14,18 +15,21 @@ class JobController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $validated = $request->validate([
-            'search' => ['nullable', 'string', 'max:200'], 
-            'category_id' => ['nullable', 'integer'],
+            'search' => ['nullable', 'string', 'max:200'],
+            'category_id' => ['nullable', 'integer', Rule::exists('categories', 'id')],
             'location' => ['nullable', 'string', 'max:120'],
             'work_type' => ['nullable', 'in:remote,onsite,hybrid'],
             'experience_level' => ['nullable', 'in:junior,mid,senior,lead'],
-            'salary_min' => ['nullable', 'integer', 'min:0'],
-            'salary_max' => ['nullable', 'integer', 'min:0'],
+            'salary_min' => ['nullable', 'integer', 'min:0', 'lte:salary_max'],
+            'salary_max' => ['nullable', 'integer', 'min:0', 'gte:salary_min'],
+            'date_posted' => ['nullable', 'in:24h,7d,30d'],
             'sort' => ['nullable', 'in:newest,oldest,salary_desc,salary_asc'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:50'],
         ]);
 
-        $query = JobListing::query()->with('category'); 
+        $query = JobListing::query()
+            ->public()
+            ->with('category');
 
         $query = $this->applySearchAndFilters($query, $validated);
 
@@ -75,6 +79,16 @@ class JobController extends Controller
             $query->where('salary_max', '<=', (int) $validated['salary_max']);
         }
 
+        if (!empty($validated['date_posted'])) {
+            $days = match ($validated['date_posted']) {
+                '24h' => 1,
+                '7d' => 7,
+                '30d' => 30,
+            };
+
+            $query->where('published_at', '>=', now()->subDays($days));
+        }
+
         return $query;
     }
 
@@ -90,6 +104,13 @@ class JobController extends Controller
 
     public function show(JobListing $jobListing): JobListingResource
     {
+        abort_unless(
+            $jobListing->status === 'published'
+                && $jobListing->published_at !== null
+                && $jobListing->approved_at !== null,
+            404
+        );
+
         $jobListing->increment('views_count');
         $jobListing->loadMissing('category');
         return new JobListingResource($jobListing);

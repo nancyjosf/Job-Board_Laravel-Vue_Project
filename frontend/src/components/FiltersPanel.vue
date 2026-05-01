@@ -13,6 +13,7 @@ const props = defineProps({
       experience_level: '',
       salary_min: '',
       salary_max: '',
+      date_posted: '',
       sort: 'newest',
     }),
   },
@@ -33,6 +34,7 @@ function onReset() {
     experience_level: '',
     salary_min: '',
     salary_max: '',
+    date_posted: '',
     sort: 'newest',
   })
   emit('reset')
@@ -129,6 +131,16 @@ function onReset() {
             <input class="filter-field text-center" :value="modelValue.salary_min" inputmode="numeric" placeholder="Min" @input="setField('salary_min', $event.target.value)" />
             <input class="filter-field text-center" :value="modelValue.salary_max" inputmode="numeric" placeholder="Max" @input="setField('salary_max', $event.target.value)" />
           </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Date Posted</label>
+          <select class="filter-field" :value="modelValue.date_posted" @change="setField('date_posted', $event.target.value)">
+            <option value="" class="bg-slate-900">Any time</option>
+            <option value="24h" class="bg-slate-900">Last 24 hours</option>
+            <option value="7d" class="bg-slate-900">Last 7 days</option>
+            <option value="30d" class="bg-slate-900">Last 30 days</option>
+          </select>
         </div>
 
         <div class="filter-group border-t border-white/10 pt-6">

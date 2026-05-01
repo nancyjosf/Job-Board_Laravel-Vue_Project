@@ -1,3 +1,83 @@
+<script setup>
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { http } from "./api/http";
+
+const route = useRoute();
+const router = useRouter();
+
+const token = ref(localStorage.getItem("token"));
+const currentUser = ref(null);
+
+const isAuthPage = computed(() => ["/login", "/register"].includes(route.path));
+const isAuthenticated = computed(() => Boolean(token.value));
+const isLoginPage = computed(() => route.path === "/login");
+const isRegisterPage = computed(() => route.path === "/register");
+
+const authActionLabel = computed(() => {
+  if (isLoginPage.value) return "Sign up";
+  if (isRegisterPage.value) return "Sign in";
+  return "Sign in";
+});
+
+const authActionPath = computed(() => {
+  if (isLoginPage.value) return "/register";
+  return "/login";
+});
+
+const imageUrl = (path) => {
+  if (!path) return "";
+  const apiBase = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
+  const backendBase = apiBase.replace(/\/api\/?$/, "");
+  return `${backendBase}/storage/${path}`;
+};
+
+const syncAuthState = () => {
+  token.value = localStorage.getItem("token");
+};
+
+const loadCurrentUser = async () => {
+  if (!isAuthenticated.value) {
+    currentUser.value = null;
+    return;
+  }
+
+  try {
+    const res = await http.get("/profile");
+    currentUser.value = res.data.user;
+  } catch {
+    localStorage.removeItem("token");
+    token.value = null;
+    currentUser.value = null;
+    if (!isAuthPage.value) {
+      router.push("/login");
+    }
+  }
+};
+
+const logout = async () => {
+  try {
+    await http.post("/logout");
+  } catch {
+    // Intentionally ignored. Client-side logout should still proceed.
+  } finally {
+    localStorage.removeItem("token");
+    token.value = null;
+    currentUser.value = null;
+    router.push("/login");
+  }
+};
+
+watch(
+  () => route.fullPath,
+  async () => {
+    syncAuthState();
+    await loadCurrentUser();
+  },
+  { immediate: true }
+);
+</script>
+
 <template>
   <div class="min-h-screen relative font-['Plus_Jakarta_Sans'] selection:bg-indigo-500/30 text-slate-200">
     
@@ -17,7 +97,7 @@
     <header class="sticky top-0 z-50 border-b border-white/[0.05] bg-white/[0.01] backdrop-blur-3xl transition-all duration-500">
       <div class="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-between">
         
-        <RouterLink to="/" class="flex items-center gap-5 group">
+        <RouterLink :to="isAuthenticated ? '/profile' : '/login'" class="flex items-center gap-5 group">
           <div class="relative w-14 h-14 flex items-center justify-center">
             <div class="absolute inset-0 bg-white/10 rounded-2xl rotate-6 group-hover:rotate-0 transition-all duration-500 border border-white/20 backdrop-blur-md"></div>
             <div class="relative w-full h-full bg-slate-950/40 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-indigo-400/50 transition-colors">
@@ -32,7 +112,7 @@
           </div>
         </RouterLink>
 
-        <nav class="hidden lg:flex items-center gap-1 bg-black/20 p-1.5 rounded-2xl border border-white/5 backdrop-blur-2xl">
+        <nav v-if="!isAuthPage || isAuthenticated" class="hidden lg:flex items-center gap-1 bg-black/20 p-1.5 rounded-2xl border border-white/5 backdrop-blur-2xl">
           <RouterLink 
             to="/" 
             class="px-12 py-2.5 rounded-xl text-sm font-black bg-white text-slate-950 shadow-2xl transition-all duration-500"
@@ -41,8 +121,40 @@
           </RouterLink>
         </nav>
 
-        <div class="flex items-center gap-6">
-          <button class="hidden md:block text-sm font-bold text-slate-400 hover:text-white transition-all hover:tracking-widest uppercase">Sign In</button>
+        <div class="flex items-center gap-4">
+          <RouterLink
+            v-if="isAuthenticated && currentUser"
+            to="/profile"
+            class="hidden md:flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-2 backdrop-blur-2xl"
+          >
+            <div class="w-10 h-10 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center text-sm font-black text-white">
+              <img
+                v-if="currentUser.image"
+                :src="imageUrl(currentUser.image)"
+                class="w-full h-full object-cover"
+                alt="Profile"
+              />
+              <span v-else>{{ currentUser?.name?.[0] || "U" }}</span>
+            </div>
+            <span class="text-sm font-bold text-white/90">{{ currentUser.name }}</span>
+          </RouterLink>
+
+          <RouterLink
+            v-if="!isAuthenticated"
+            :to="authActionPath"
+            class="hidden md:block text-sm font-bold text-slate-400 hover:text-white transition-all hover:tracking-widest uppercase"
+          >
+            {{ authActionLabel }}
+          </RouterLink>
+
+          <button
+            v-else
+            @click="logout"
+            class="hidden md:block text-sm font-bold text-slate-400 hover:text-white transition-all hover:tracking-widest uppercase"
+          >
+            Logout
+          </button>
+
           <button class="relative group px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 transition-all hover:scale-105 active:scale-95 shadow-[0_20px_40px_-10px_rgba(79,70,229,0.5)]">
             <span class="text-white font-black text-sm tracking-wide uppercase">Post a Job</span>
           </button>

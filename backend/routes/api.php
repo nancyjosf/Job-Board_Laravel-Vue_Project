@@ -8,25 +8,24 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\ProfileController;
 
 function allowedEndpointsByRole(UserRole $role): array
 {
     return match ($role) {
         UserRole::Admin => [
             '/api/admin/dashboard',
-            '/api/management/reports',
-            '/api/user',
+            '/api/profile',
             '/api/logout',
         ],
         UserRole::Employer => [
             '/api/employer/dashboard',
-            '/api/management/reports',
-            '/api/user',
+            '/api/profile',
             '/api/logout',
         ],
         UserRole::Candidate => [
             '/api/candidate/dashboard',
-            '/api/user',
+            '/api/profile',
             '/api/logout',
         ],
     };
@@ -88,6 +87,15 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/profile', [ProfileController::class, 'show']);
+
+    Route::put('/profile', [ProfileController::class, 'update']);
+
 });

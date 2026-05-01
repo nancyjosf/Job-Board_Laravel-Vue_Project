@@ -4,7 +4,7 @@ import JobDetails from '../views/JobDetails.vue'
 
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
-
+import Profile from '../views/Profile.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -14,6 +14,7 @@ export const router = createRouter({
 
     { path: '/login', name: 'login', component: Login },
     { path: '/register', name: 'register', component: Register },
+    { path: '/profile', name: 'profile', component: Profile, meta: { requiresAuth: true } },
 
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],

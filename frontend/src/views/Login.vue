@@ -94,7 +94,7 @@ const login = async () => {
 
     localStorage.setItem("token", res.data.token);
 
-    router.push("/jobs");
+    router.push("/Profile");
 
   } catch (err) {
     error.value =

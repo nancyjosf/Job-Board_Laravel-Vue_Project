@@ -9,14 +9,14 @@ import Profile from '../views/Profile.vue'
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', name: 'jobs', component: Jobs },
-    { path: '/jobs/:id', name: 'job-details', component: JobDetails, props: true },
+    { path: '/', name: 'jobs', component: Jobs, meta: { requiresAuth: true } },
+    { path: '/jobs/:id', name: 'job-details', component: JobDetails, props: true, meta: { requiresAuth: true } },
 
-    { path: '/login', name: 'login', component: Login },
-    { path: '/register', name: 'register', component: Register },
+    { path: '/login', name: 'login', component: Login, meta: { guestOnly: true } },
+    { path: '/register', name: 'register', component: Register, meta: { guestOnly: true } },
     { path: '/profile', name: 'profile', component: Profile, meta: { requiresAuth: true } },
 
-    { path: '/:pathMatch(.*)*', redirect: '/' },
+    { path: '/:pathMatch(.*)*', redirect: '/login' },
   ],
 })
 
@@ -25,6 +25,8 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth && !token) {
     next('/login')
+  } else if (to.meta.guestOnly && token) {
+    next('/profile')
   } else {
     next()
   }

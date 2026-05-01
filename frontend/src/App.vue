@@ -45,8 +45,10 @@ const loadCurrentUser = async () => {
   try {
     const res = await http.get("/profile");
     currentUser.value = res.data.user;
+    localStorage.setItem("user_role", res.data.user?.role || "");
   } catch {
     localStorage.removeItem("token");
+    localStorage.removeItem("user_role");
     token.value = null;
     currentUser.value = null;
     if (!isAuthPage.value) {
@@ -62,6 +64,7 @@ const logout = async () => {
     // Intentionally ignored. Client-side logout should still proceed.
   } finally {
     localStorage.removeItem("token");
+    localStorage.removeItem("user_role");
     token.value = null;
     currentUser.value = null;
     router.push("/login");

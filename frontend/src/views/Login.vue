@@ -83,6 +83,12 @@ const email = ref("");
 const password = ref("");
 const error = ref("");
 
+const redirectPathByRole = {
+  candidate: "/",
+  employer: "/employer/dashboard",
+  admin: "/admin/dashboard",
+};
+
 const login = async () => {
   error.value = "";
 
@@ -93,8 +99,10 @@ const login = async () => {
     });
 
     localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user_role", res.data.user?.role || "");
 
-    router.push("/profile");
+    const role = res.data.user?.role;
+    router.push(redirectPathByRole[role] || "/profile");
 
   } catch (err) {
     error.value =

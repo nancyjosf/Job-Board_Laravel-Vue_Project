@@ -128,6 +128,12 @@ const passwordConfirmation = ref("");
 
 const error = ref("");
 
+const redirectPathByRole = {
+  candidate: "/",
+  employer: "/employer/dashboard",
+  admin: "/admin/dashboard",
+};
+
 const register = async () => {
   error.value = "";
 
@@ -141,8 +147,10 @@ const register = async () => {
     });
 
     localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user_role", res.data.user?.role || "");
 
-    router.push("/profile");
+    const userRole = res.data.user?.role;
+    router.push(redirectPathByRole[userRole] || "/profile");
 
   } catch (err) {
     error.value =

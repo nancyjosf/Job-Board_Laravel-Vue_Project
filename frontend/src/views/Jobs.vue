@@ -24,6 +24,7 @@ const filters = ref({
   experience_level: '',
   salary_min: '',
   salary_max: '',
+  date_posted: '',
   sort: 'newest',
 })
 
@@ -40,6 +41,7 @@ function syncLocalFromQuery(query) {
     experience_level: query.experience_level ? String(query.experience_level) : '',
     salary_min: query.salary_min ? String(query.salary_min) : '',
     salary_max: query.salary_max ? String(query.salary_max) : '',
+    date_posted: query.date_posted ? String(query.date_posted) : '',
     sort: query.sort ? String(query.sort) : 'newest',
   }
 }
@@ -53,6 +55,7 @@ function buildQuery({ page = 1 } = {}) {
     experience_level: filters.value.experience_level || undefined,
     salary_min: filters.value.salary_min || undefined,
     salary_max: filters.value.salary_max || undefined,
+    date_posted: filters.value.date_posted || undefined,
     sort: filters.value.sort || 'newest',
     page: page > 1 ? String(page) : undefined,
   }
@@ -74,7 +77,6 @@ async function loadJobsFromRoute() {
 function updateQuery(next) { router.replace({ query: next }) }
 
 function onSearch() {
-  console.log("Searching for:", q.value); 
   updateQuery(buildQuery({ page: 1 }));
 }
 

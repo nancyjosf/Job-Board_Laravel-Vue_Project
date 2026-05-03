@@ -7,32 +7,40 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class JobListingResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
+            'category_id' => $this->category_id,
+            'category_name' => $this->whenLoaded('category', fn() => $this->category->name),
             'title' => $this->title,
-            'companyName' => $this->company_name,
-            'company_logo' => $this->company_logo,
+            'company_name' => $this->company_name,
             'description' => $this->description,
             'responsibilities' => $this->responsibilities,
             'requirements' => $this->requirements,
-            'benefits' => $this->benefits,
             'location' => $this->location,
-            'workType' => $this->work_type,
-            'experienceLevel' => $this->experience_level,
-            'salaryMin' => $this->salary_min,
-            'salaryMax' => $this->salary_max,
-            'salaryCurrency' => $this->salary_currency,
-            'publishedAt' => optional($this->published_at)->toIso8601String(),
-            'viewsCount' => $this->views_count,
-            'applicationsCount' => $this->applications_count,
-            'category' => new CategoryResource($this->whenLoaded('category')),
+            'work_type' => $this->work_type,
+            'experience_level' => $this->experience_level,
+            'salary_min' => $this->salary_min,
+            'salary_max' => $this->salary_max,
+            'salary_formatted' => $this->formatSalary(),
+            'status' => $this->status,
+            'views_count' => $this->views_count,
+            'applications_count' => $this->applications_count ?? 0,
+            'posted_at' => $this->published_at ? $this->published_at->diffForHumans() : 'Not published yet',
+            'deadline' => $this->deadline ? $this->deadline->format('Y-m-d') : null,
+            'is_owner' => $request->user() ? $this->user_id === $request->user()->id : false,
         ];
+    }
+
+    private function formatSalary(): string
+    {
+        if ($this->salary_min && $this->salary_max) {
+            return "{$this->salary_min} - {$this->salary_max}";
+        }
+        if ($this->salary_min) {
+            return "From {$this->salary_min}";
+        }
+        return "Salary not disclosed";
     }
 }

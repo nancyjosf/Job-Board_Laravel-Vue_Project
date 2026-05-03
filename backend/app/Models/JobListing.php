@@ -33,6 +33,8 @@ class JobListing extends Model
         'views_count',
         'applications_count',
          'user_id',
+         'status',
+         'deadline',
     ];
 
     protected $casts = [

@@ -3,16 +3,15 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
@@ -32,11 +31,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -56,5 +50,10 @@ class User extends Authenticatable
         );
 
         return in_array($currentRole, $allowedRoles, true);
+    }
+
+    public function jobs(): HasMany
+    {
+        return $this->hasMany(JobListing::class);
     }
 }

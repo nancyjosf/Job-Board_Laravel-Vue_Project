@@ -47,23 +47,50 @@ class ApplicationController extends Controller
         }
     }
 
-    public function myApplications()
+    public function myApplications(Request $request)
     {
-        $applications = Application::with('job')->where('candidate_id', auth()->id())->get();
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $applications = Application::with('job')->where('candidate_id', $user->id)->get();
 
         return response()->json($applications);
     }
 
     public function updateStatus(Request $request, $id)
     {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         $request->validate([
             'status' => 'required|in:accepted,rejected',
         ]);
 
-        $this->service->changeStatus($id, $request->status, auth()->id());
+        $this->service->changeStatus($id, $request->status, $user->id);
 
         return response()->json([
             'message' => 'Application status updated to ' . $request->status,
+        ]);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $this->service->cancelApplication($id, $user->id);
+
+        return response()->json([
+            'message' => 'Application cancelled successfully.',
         ]);
     }
 }

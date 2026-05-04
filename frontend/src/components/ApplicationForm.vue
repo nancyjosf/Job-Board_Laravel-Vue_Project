@@ -20,7 +20,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
+import { http } from '../api/http';
 
 const props = defineProps({
   jobId: { type: [String, Number], required: true }
@@ -55,7 +55,7 @@ const submitApplication = async () => {
   formData.append('resume', form.value.resume);
 
   try {
-    await axios.post('/api/applications', formData, {
+    await http.post('/applications', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
     alert('Application sent successfully!');

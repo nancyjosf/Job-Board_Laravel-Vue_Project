@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { http } from '../api/http';
 
 const applications = ref([]);
 const loading = ref(false);
@@ -43,7 +43,7 @@ const cancelingIds = ref([]);
 const fetchApplications = async () => {
   loading.value = true;
   try {
-    const res = await axios.get('/api/my-applications');
+    const res = await http.get('/applications/my');
     // handle both { data: [...] } and raw array responses
     applications.value = res.data?.data ?? res.data ?? [];
   } catch (err) {
@@ -60,7 +60,7 @@ const cancelApplication = async (id) => {
   cancelingIds.value.push(id);
 
   try {
-    await axios.delete(`/api/applications/${id}`);
+    await http.delete(`/applications/${id}`);
     applications.value = applications.value.filter(a => a.id !== id);
   } catch (err) {
     const msg = err?.response?.data?.message || err.message || 'Failed to cancel';

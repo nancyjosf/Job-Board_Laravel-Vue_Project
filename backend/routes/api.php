@@ -9,7 +9,7 @@ use Illuminate\Validation\Rules;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\PaymentController;
+
 function allowedEndpointsByRole(UserRole $role): array
 {
     return match ($role) {
@@ -34,20 +34,15 @@ function allowedEndpointsByRole(UserRole $role): array
 }
 
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/jobs', [JobController::class, 'index']);
-Route::get('/jobs/{jobListing}', [JobController::class, 'show']);
-
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/stripe/intent', [PaymentController::class, 'createStripeIntent']);
-});
+Route::get('/jobs', [JobController::class, 'index']); 
+Route::get('/jobs/{jobListing}', [JobController::class, 'show']); 
 
 Route::post('/register', function (Request $request) {
     $validated = $request->validate([
         'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        'role' => ['nullable', 'string', 'in:' . implode(',', UserRole::values())],
+        'role' => ['nullable', 'string', 'in:'.implode(',', UserRole::values())],
     ]);
 
     $user = User::create([
@@ -73,11 +68,9 @@ Route::post('/login', function (Request $request) {
 
     $user = User::where('email', $validated['email'])->first();
 
-
     if (! $user || ! Hash::check($validated['password'], $user->password)) {
         return response()->json(['message' => 'The provided credentials are incorrect.'], 422);
     }
- 
 
     return response()->json([
         'message' => 'Logged in successfully.',

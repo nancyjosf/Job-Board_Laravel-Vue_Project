@@ -85,11 +85,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
-    Route::get('/my-applications', [ApplicationController::class, 'myApplications']);
+    Route::post('/applications', [ApplicationController::class, 'store']);
+    Route::get('/applications/my', [ApplicationController::class, 'myApplications']);
     Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);
     Route::patch('/applications/{id}/status', [ApplicationController::class, 'updateStatus']);
-    Route::post('/applications', [ApplicationController::class, 'store']);
-
     Route::get('/user', function (Request $request) {
         return $request->user();
     });

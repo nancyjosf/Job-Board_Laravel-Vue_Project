@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Repositories\ApplicationRepository;
-use Illuminate\Support\Facades\Storage;
 use Exception;
 
 class ApplicationService
@@ -17,13 +16,13 @@ class ApplicationService
 
     public function applyToJob(array $data, $file)
     {
-        if ($this->repository->hasAlreadyApplied($data['user_id'], $data['job_id'])) {
+        if ($this->repository->hasAlreadyApplied($data['candidate_id'], $data['job_id'])) {
             throw new Exception("You have already applied for this job.");
         }
 
         if ($file) {
             $path = $file->store('resumes', 'public');
-            $data['resume'] = $path;
+            $data['resume_path'] = $path;
         }
 
         return $this->repository->create($data);

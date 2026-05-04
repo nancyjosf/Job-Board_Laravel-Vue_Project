@@ -14,7 +14,18 @@ class ApplicationRepository
     public function hasAlreadyApplied($candidateId, $jobId)
     {
         return Application::where('candidate_id', $candidateId)
-                          ->where('job_id', $jobId)
-                          ->exists();
+            ->where('job_id', $jobId)
+            ->exists();
+    }
+
+    public function updateStatus($applicationId, $status)
+    {
+        return Application::where('id', $applicationId)->update(['status' => $status]);
+    }
+
+    public function delete($applicationId)
+    {
+        
+        return Application::where('id', $applicationId)->delete();
     }
 }

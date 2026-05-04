@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Application;
 use App\Services\ApplicationService;
 use Illuminate\Http\Request;
 use Exception;
@@ -44,5 +45,25 @@ class ApplicationController extends Controller
                 'message' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function myApplications()
+    {
+        $applications = Application::with('job')->where('candidate_id', auth()->id())->get();
+
+        return response()->json($applications);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:accepted,rejected',
+        ]);
+
+        $this->service->changeStatus($id, $request->status, auth()->id());
+
+        return response()->json([
+            'message' => 'Application status updated to ' . $request->status,
+        ]);
     }
 }

@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Api\PaymentController;
 
 function allowedEndpointsByRole(UserRole $role): array
 {

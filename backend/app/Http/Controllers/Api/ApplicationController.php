@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Application;
 use App\Services\ApplicationService;
 use Illuminate\Http\Request;
 use Exception;
@@ -31,7 +32,7 @@ class ApplicationController extends Controller
                 return response()->json(['message' => 'Unauthenticated.'], 401);
             }
 
-            $data = array_merge($validated, ['user_id' => $user->id]);
+            $data = array_merge($validated, ['candidate_id' => $user->id]);
 
             $application = $this->service->applyToJob($data, $request->file('resume'));
 
@@ -44,5 +45,52 @@ class ApplicationController extends Controller
                 'message' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function myApplications(Request $request)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $applications = Application::with('job')->where('candidate_id', $user->id)->get();
+
+        return response()->json($applications);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $request->validate([
+            'status' => 'required|in:accepted,rejected',
+        ]);
+
+        $this->service->changeStatus($id, $request->status, $user->id);
+
+        return response()->json([
+            'message' => 'Application status updated to ' . $request->status,
+        ]);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $this->service->cancelApplication($id, $user->id);
+
+        return response()->json([
+            'message' => 'Application cancelled successfully.',
+        ]);
     }
 }

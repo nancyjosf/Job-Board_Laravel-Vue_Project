@@ -6,17 +6,26 @@ use App\Models\Application;
 
 class ApplicationRepository
 {
-    
     public function create(array $data)
     {
         return Application::create($data);
     }
 
-   
-    public function hasAlreadyApplied($userId, $jobId)
+    public function hasAlreadyApplied($candidateId, $jobId)
     {
-        return Application::where('user_id', $userId)
-                          ->where('job_id', $jobId)
-                          ->exists();
+        return Application::where('candidate_id', $candidateId)
+            ->where('job_id', $jobId)
+            ->exists();
+    }
+
+    public function updateStatus($applicationId, $status)
+    {
+        return Application::where('id', $applicationId)->update(['status' => $status]);
+    }
+
+    public function delete($applicationId)
+    {
+        
+        return Application::where('id', $applicationId)->delete();
     }
 }

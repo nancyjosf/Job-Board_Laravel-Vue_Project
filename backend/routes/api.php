@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\ApplicationController;
 
 function allowedEndpointsByRole(UserRole $role): array
 {
@@ -85,6 +85,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::get('/my-applications', [ApplicationController::class, 'myApplications']);
+    Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);
+    Route::patch('/applications/{id}/status', [ApplicationController::class, 'updateStatus']);
     Route::post('/applications', [ApplicationController::class, 'store']);
 
     Route::get('/user', function (Request $request) {

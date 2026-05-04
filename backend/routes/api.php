@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\PaymentController;
 
 function allowedEndpointsByRole(UserRole $role): array
 {
@@ -85,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/stripe/intent', [PaymentController::class, 'createStripeIntent']);
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::get('/applications/my', [ApplicationController::class, 'myApplications']);
     Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);

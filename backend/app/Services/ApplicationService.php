@@ -27,4 +27,14 @@ class ApplicationService
 
         return $this->repository->create($data);
     }
+
+    public function changeStatus($applicationId, $status, $userId)
+    {
+        return $this->repository->updateStatus($applicationId, $status);
+    }
+
+    public function cancelApplication($applicationId, $candidateId)
+    {
+        return $this->repository->delete($applicationId);
+    }
 }

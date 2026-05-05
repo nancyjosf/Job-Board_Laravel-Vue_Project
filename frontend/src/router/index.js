@@ -77,6 +77,7 @@ export const router = createRouter({
       meta: { requiresAuth: true },
     },
 
+<<<<<<< HEAD
 
     { path: "/:pathMatch(.*)*", redirect: "/login" },
 
@@ -95,6 +96,21 @@ export const router = createRouter({
   meta: { requiresAuth: true, roles: ['employer'] } 
 }
 
+=======
+    {
+      path: "/employer/jobs/create",
+      name: "create-job",
+      component: () => import("../views/CreateJob.vue"),
+      meta: { requiresAuth: true, roles: ["employer"] },
+    },
+    {
+      path: "/employer/jobs/:id/edit",
+      name: "edit-job",
+      component: () => import("../views/EditJob.vue"),
+      meta: { requiresAuth: true, roles: ["employer"] },
+    },
+    { path: "/:pathMatch(.*)*", redirect: "/login" },
+>>>>>>> c8fb471a7f0cb084156f471403a510cb2092d1e7
   ],
 });
 

@@ -123,16 +123,21 @@ onMounted(loadDashboardData);
       </div>
     </section>
   </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .action-btn {
   @apply px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-white/50 hover:bg-white/10 hover:text-white transition-all cursor-pointer;
 }
+<<<<<<< HEAD
 
 
 @media (max-width: 768px) {
   header { @apply p-8 rounded-[2rem]; }
   .text-6xl { @apply text-4xl; }
 }
+=======
+>>>>>>> c8fb471a7f0cb084156f471403a510cb2092d1e7
 </style>

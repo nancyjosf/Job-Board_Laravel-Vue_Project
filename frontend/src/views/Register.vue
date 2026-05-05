@@ -59,12 +59,23 @@
               Password
             </label>
 
-            <input
-              v-model="password"
-              type="password"
-              placeholder="Enter password"
-              class="field-ui"
-            />
+            <div class="relative">
+              <input
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="Enter password"
+                class="field-ui pr-12"
+              />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
+              >
+                <span class="material-symbols-outlined text-2xl">
+                  {{ showPassword ? 'visibility_off' : 'visibility' }}
+                </span>
+              </button>
+            </div>
           </div>
 
           <div class="space-y-3">
@@ -72,12 +83,23 @@
               Confirm Password
             </label>
 
-            <input
-              v-model="passwordConfirmation"
-              type="password"
-              placeholder="Confirm password"
-              class="field-ui"
-            />
+            <div class="relative">
+              <input
+                v-model="passwordConfirmation"
+                :type="showPasswordConfirmation ? 'text' : 'password'"
+                placeholder="Confirm password"
+                class="field-ui pr-12"
+              />
+              <button
+                type="button"
+                @click="showPasswordConfirmation = !showPasswordConfirmation"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
+              >
+                <span class="material-symbols-outlined text-2xl">
+                  {{ showPasswordConfirmation ? 'visibility_off' : 'visibility' }}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -125,6 +147,8 @@ const role = ref("candidate");
 
 const password = ref("");
 const passwordConfirmation = ref("");
+const showPassword = ref(false);
+const showPasswordConfirmation = ref(false);
 
 const error = ref("");
 

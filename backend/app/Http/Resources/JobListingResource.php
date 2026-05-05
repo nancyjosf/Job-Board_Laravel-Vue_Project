@@ -10,20 +10,36 @@ class JobListingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            // identifiers
             'id' => $this->id,
             'category_id' => $this->category_id,
             'category_name' => $this->whenLoaded('category', fn() => $this->category->name),
-            'title' => $this->title,
+
+            // company / display fields (snake_case for API consumers, plus camelCase for frontend convenience)
             'company_name' => $this->company_name,
+            'companyName' => $this->company_name,
+            'company_logo' => $this->company_logo,
+
+            // job content
+            'title' => $this->title,
             'description' => $this->description,
             'responsibilities' => $this->responsibilities,
             'requirements' => $this->requirements,
+            'benefits' => $this->benefits,
+
+            // location / types
             'location' => $this->location,
             'work_type' => $this->work_type,
+            'workType' => $this->work_type,
+
+            // experience + salary
             'experience_level' => $this->experience_level,
+            'experienceLevel' => $this->experience_level,
             'salary_min' => $this->salary_min,
             'salary_max' => $this->salary_max,
             'salary_formatted' => $this->formatSalary(),
+
+            // meta
             'status' => $this->status,
             'views_count' => $this->views_count,
             'applications_count' => $this->applications_count ?? 0,

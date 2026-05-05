@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\PaymentController;
 
 function allowedEndpointsByRole(UserRole $role): array
 {
@@ -34,15 +36,15 @@ function allowedEndpointsByRole(UserRole $role): array
 }
 
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/jobs', [JobController::class, 'index']); 
-Route::get('/jobs/{jobListing}', [JobController::class, 'show']); 
+Route::get('/jobs', [JobController::class, 'index']);
+Route::get('/jobs/{jobListing}', [JobController::class, 'show']);
 
 Route::post('/register', function (Request $request) {
     $validated = $request->validate([
         'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        'role' => ['nullable', 'string', 'in:'.implode(',', UserRole::values())],
+        'role' => ['nullable', 'string', 'in:' . implode(',', UserRole::values())],
     ]);
 
     $user = User::create([
@@ -84,21 +86,27 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
-    
+    Route::post('/payment/stripe-intent', [PaymentController::class, 'createStripeIntent']);
+    Route::post('/applications', [ApplicationController::class, 'store']);
+    Route::get('/applications', [ApplicationController::class, 'myApplications']);
+    Route::get('/applications/my', [ApplicationController::class, 'myApplications']);
+    Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);
+    Route::patch('/applications/{id}/status', [ApplicationController::class, 'updateStatus']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
     Route::prefix('employer')->group(function () {
-        Route::get('/stats', [JobController::class, 'stats']); 
-        Route::get('/jobs', [JobController::class, 'myJobs']);         
-        Route::post('/jobs', [JobController::class, 'store']);         
-        Route::put('/jobs/{job}', [JobController::class, 'update']);   
-        Route::delete('/jobs/{job}', [JobController::class, 'destroy']); 
-        
-        Route::patch('/jobs/{job}/publish', [JobController::class, 'publish']);     
-        Route::patch('/jobs/{job}/unpublish', [JobController::class, 'unpublish']); 
-        Route::patch('/jobs/{job}/archive', [JobController::class, 'archive']);    
+        Route::get('/stats', [JobController::class, 'stats']);
+        Route::get('/jobs', [JobController::class, 'myJobs']);
+        Route::get('/applications', [ApplicationController::class, 'employerApplications']);
+        Route::post('/jobs', [JobController::class, 'store']);
+        Route::put('/jobs/{job}', [JobController::class, 'update']);
+        Route::delete('/jobs/{job}', [JobController::class, 'destroy']);
+
+        Route::patch('/jobs/{job}/publish', [JobController::class, 'publish']);
+        Route::patch('/jobs/{job}/unpublish', [JobController::class, 'unpublish']);
+        Route::patch('/jobs/{job}/archive', [JobController::class, 'archive']);
     });
 
     Route::post('/logout', function (Request $request) {

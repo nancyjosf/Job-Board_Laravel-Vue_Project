@@ -122,6 +122,24 @@ watch(
           >
             Explore Jobs
           </RouterLink>
+          
+          <!-- Candidate Navigation -->
+          <RouterLink
+            v-if="isAuthenticated && currentUser?.role === 'candidate'"
+            to="/applications"
+            class="px-6 py-2.5 rounded-xl text-sm font-black text-white hover:bg-white/10 transition-all duration-300"
+          >
+            My Applications
+          </RouterLink>
+          
+          <!-- Employer Navigation -->
+          <RouterLink
+            v-if="isAuthenticated && currentUser?.role === 'employer'"
+            to="/employer/applications"
+            class="px-6 py-2.5 rounded-xl text-sm font-black text-white hover:bg-white/10 transition-all duration-300"
+          >
+            Review Applications
+          </RouterLink>
         </nav>
 
         <div class="flex items-center gap-4">

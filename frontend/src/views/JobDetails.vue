@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Motion } from "@motionone/vue"
 import { fetchJobById } from '../api/jobs'
+import ApplicationForm from '../components/ApplicationForm.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -10,11 +11,30 @@ const router = useRouter()
 const job = ref(null)
 const loading = ref(false)
 const error = ref('')
+const showApplicationModal = ref(false)
 
 const backQuery = computed(() => {
   const query = { ...route.query }
   delete query.job_id
   return query
+})
+
+const salaryRange = computed(() => {
+  if (!job.value) return 'N/A'
+
+  if (job.value.salary_formatted) {
+    return job.value.salary_formatted
+  }
+
+  if (job.value.salary_min && job.value.salary_max) {
+    return `${job.value.salary_min} - ${job.value.salary_max}`
+  }
+
+  if (job.value.salary_min) {
+    return `From ${job.value.salary_min}`
+  }
+
+  return 'N/A'
 })
 
 async function load() {
@@ -32,6 +52,11 @@ async function load() {
 
 function back() {
   router.push({ name: 'jobs', query: backQuery.value })
+}
+
+const handleApplicationSubmitted = () => {
+  showApplicationModal.value = false
+  // Optionally reload or show success message
 }
 
 watch(() => route.params.id, () => load())
@@ -76,7 +101,7 @@ onMounted(load)
               <button @click="back" class="px-10 py-5 rounded-2xl border border-white/10 bg-white/5 text-white font-black text-sm uppercase tracking-widest hover:bg-white/10 transition-all">
                 Dismiss
               </button>
-              <button class="px-14 py-5 rounded-2xl bg-indigo-600 text-white font-[1000] text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-indigo-500 transition-all transform hover:-translate-y-1">
+              <button @click="showApplicationModal = true" class="px-14 py-5 rounded-2xl bg-indigo-600 text-white font-[1000] text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-indigo-500 transition-all transform hover:-translate-y-1">
                 Apply Now
               </button>
             </div>
@@ -136,7 +161,7 @@ onMounted(load)
                 <div class="mt-12 p-10 rounded-[3rem] bg-indigo-600 shadow-2xl text-center border border-white/10">
                   <p class="text-xs font-black uppercase tracking-[0.4em] text-indigo-100 mb-4">Salary Range</p>
                   <p class="text-3xl font-[1000] text-white tracking-tighter">
-                    {{ job?.salaryMin }} - {{ job?.salaryMax }}
+                    {{ salaryRange }}
                   </p>
                 </div>
               </div>
@@ -145,6 +170,48 @@ onMounted(load)
         </Motion>
       </div>
     </div>
+
+    <!-- Application Modal -->
+    <Teleport to="body">
+      <div
+        v-if="showApplicationModal"
+        class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+        @click.self="showApplicationModal = false"
+      >
+        <Motion
+          :initial="{ opacity: 0, scale: 0.9 }"
+          :animate="{ opacity: 1, scale: 1 }"
+        >
+          <div class="bg-slate-900 rounded-[3rem] border border-white/10 shadow-2xl p-10 md:p-14 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            
+            <!-- Close Button -->
+            <button
+              @click="showApplicationModal = false"
+              class="float-right text-3xl text-white/60 hover:text-white transition"
+            >
+              ✕
+            </button>
+
+            <!-- Modal Header -->
+            <div class="mb-8">
+              <h2 class="text-4xl font-[1000] text-white tracking-tight mb-2">
+                Apply for {{ job?.title || 'this job' }}
+              </h2>
+              <p class="text-white/50 text-lg">
+                Submit your application along with your resume and cover letter.
+              </p>
+            </div>
+
+            <!-- Application Form -->
+            <ApplicationForm
+              :key="job?.id"
+              :job-id="job?.id || route.params.id"
+              @submitted="handleApplicationSubmitted"
+            />
+          </div>
+        </Motion>
+      </div>
+    </Teleport>
   </div>
 </template>
 

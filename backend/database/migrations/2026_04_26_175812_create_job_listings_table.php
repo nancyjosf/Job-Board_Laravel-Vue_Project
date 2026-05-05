@@ -42,6 +42,7 @@ return new class extends Migration
             $table->unsignedInteger('views_count')->default(0);
             $table->unsignedInteger('applications_count')->default(0);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->date('deadline')->nullable();
 
             $table->index(['status', 'approved_at', 'published_at']);
             $table->index(['category_id', 'location']);

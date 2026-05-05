@@ -8,7 +8,6 @@
   #app {
     @apply min-h-screen;
     background-attachment: fixed;
-    font-family: "Inter", sans-serif;
   }
 
   body {
@@ -23,17 +22,43 @@
   }
 
   input::placeholder {
-    @apply text-slate-400 !important;
+    @apply text-white/40;
+  }
+
+  select::placeholder {
+    @apply text-white/40;
+  }
+
+  textarea::placeholder {
+    @apply text-white/40;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+    display: inline-block;
+    line-height: 1;
   }
 }
 
 @layer components {
   .app-bg {
     background:
-      radial-gradient(circle at top right, rgba(99, 102, 241, 0.2), transparent 40%),
-      radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.15), transparent 40%),
+      radial-gradient(
+        circle at top right,
+        rgba(99, 102, 241, 0.2),
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at bottom left,
+        rgba(168, 85, 247, 0.15),
+        transparent 40%
+      ),
       linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)),
-      url('/scott-graham-5fNmWej4tAA-unsplash.jpg');
+      url("@/assets/images/your-bg.jpg");
 
     background-size: cover;
     background-position: center;
@@ -41,7 +66,7 @@
   }
 
   .card-ui {
-    @apply rounded-[3rem] border border-white/10 bg-black/40 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6)] backdrop-blur-[40px] transition-all duration-500;
+    @apply rounded-[2.5rem] border border-white/10 bg-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.6)] backdrop-blur-2xl transition-all duration-500;
   }
 
   .tag-modern {
@@ -50,16 +75,11 @@
   }
 
   .field-ui {
-    @apply w-full rounded-2xl border border-white/10 bg-black/55 px-6 py-4 text-slate-100 placeholder:text-slate-400 outline-none transition backdrop-blur-xl focus:border-indigo-500/60 focus:bg-black/70 focus:ring-4 focus:ring-indigo-500/10;
-    color: #f8fafc !important;
+    @apply w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-white placeholder:text-white/40 outline-none transition backdrop-blur-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 focus:bg-white/10;
   }
 
-  .field-ui:-webkit-autofill,
-  .field-ui:-webkit-autofill:hover,
-  .field-ui:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f8fafc !important;
-    -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.65) inset !important;
-    transition: background-color 5000s ease-in-out 0s;
+  .field-ui:focus {
+    transform: scale(1.01);
   }
 
   .btn-ui {
@@ -67,7 +87,12 @@
   }
 
   .btn-primary-ui {
-    @apply border-transparent bg-indigo-600 text-white font-[1000] shadow-lg shadow-indigo-900/20 hover:bg-indigo-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transform hover:-translate-y-0.5 active:scale-95 transition-all duration-300;
+    background: linear-gradient(135deg, #4f46e5 0%, #a855f7 100%);
+    @apply text-white font-[1000] shadow-lg shadow-indigo-900/30 hover:shadow-[0_0_40px_rgba(99,102,241,0.6)] transition-all duration-300 border-transparent;
+  }
+
+  .btn-primary-ui:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #9333ea 100%);
   }
 
   .text-glass {

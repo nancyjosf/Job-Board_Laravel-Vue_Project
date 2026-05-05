@@ -17,6 +17,24 @@ const backQuery = computed(() => {
   return query
 })
 
+const salaryRange = computed(() => {
+  if (!job.value) return 'N/A'
+
+  if (job.value.salary_formatted) {
+    return job.value.salary_formatted
+  }
+
+  if (job.value.salary_min && job.value.salary_max) {
+    return `${job.value.salary_min} - ${job.value.salary_max}`
+  }
+
+  if (job.value.salary_min) {
+    return `From ${job.value.salary_min}`
+  }
+
+  return 'N/A'
+})
+
 async function load() {
   loading.value = true
   error.value = ''
@@ -136,7 +154,7 @@ onMounted(load)
                 <div class="mt-12 p-10 rounded-[3rem] bg-indigo-600 shadow-2xl text-center border border-white/10">
                   <p class="text-xs font-black uppercase tracking-[0.4em] text-indigo-100 mb-4">Salary Range</p>
                   <p class="text-3xl font-[1000] text-white tracking-tighter">
-                    {{ job?.salaryMin }} - {{ job?.salaryMax }}
+                    {{ salaryRange }}
                   </p>
                 </div>
               </div>

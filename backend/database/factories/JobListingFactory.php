@@ -76,6 +76,7 @@ class JobListingFactory extends Factory
         $companyName = $this->faker->randomElement(['Wayzon', 'Google', 'Meta', 'Amazon', 'Salla', 'Zid', 'Freelance Hub']);
 
         return [
+            'user_id' => \App\Models\User::factory(),
             'title' => $title,
             'company_name' => $companyName,
             'company_logo' => 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($companyName) . '&backgroundColor=6366f1&fontFamily=Arial&fontWeight=700',

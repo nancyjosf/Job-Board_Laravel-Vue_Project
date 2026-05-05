@@ -1,6 +1,8 @@
 <template>
   <div class="min-h-screen app-bg flex items-center justify-center px-6 py-12">
+    
     <div class="w-full max-w-2xl card-ui p-12 md:p-16">
+      
       <div class="mb-12 text-center">
         <h1 class="text-5xl md:text-6xl font-[1000] tracking-tighter text-glass">
           Create Account
@@ -12,6 +14,7 @@
       </div>
 
       <form @submit.prevent="register" class="space-y-8">
+
         <div class="space-y-3">
           <label class="text-xs font-black uppercase tracking-[0.3em] text-white/40">
             Full Name
@@ -50,6 +53,7 @@
         </div>
 
         <div class="grid md:grid-cols-2 gap-6">
+          
           <div class="space-y-3">
             <label class="text-xs font-black uppercase tracking-[0.3em] text-white/40">
               Password
@@ -60,15 +64,14 @@
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
                 placeholder="Enter password"
-                class="field-ui pr-14"
+                class="field-ui pr-12"
               />
               <button
                 type="button"
-                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white"
                 @click="showPassword = !showPassword"
-                :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
               >
-                <span class="material-symbols-outlined text-[20px] leading-none align-middle">
+                <span class="material-symbols-outlined text-2xl">
                   {{ showPassword ? 'visibility_off' : 'visibility' }}
                 </span>
               </button>
@@ -85,15 +88,14 @@
                 v-model="passwordConfirmation"
                 :type="showPasswordConfirmation ? 'text' : 'password'"
                 placeholder="Confirm password"
-                class="field-ui pr-14"
+                class="field-ui pr-12"
               />
               <button
                 type="button"
-                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white"
                 @click="showPasswordConfirmation = !showPasswordConfirmation"
-                :aria-label="showPasswordConfirmation ? 'Hide confirm password' : 'Show confirm password'"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
               >
-                <span class="material-symbols-outlined text-[20px] leading-none align-middle">
+                <span class="material-symbols-outlined text-2xl">
                   {{ showPasswordConfirmation ? 'visibility_off' : 'visibility' }}
                 </span>
               </button>
@@ -101,7 +103,10 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-ui btn-primary-ui w-full">
+        <button
+          type="submit"
+          class="btn-ui btn-primary-ui w-full"
+        >
           Create Account
         </button>
 

@@ -38,15 +38,14 @@
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
               placeholder="Enter your password"
-              class="field-ui pr-14"
+              class="field-ui pr-12"
             />
             <button
               type="button"
-              class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white"
               @click="showPassword = !showPassword"
-              :aria-label="showPassword ? 'Hide password' : 'Show password'"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
             >
-              <span class="material-symbols-outlined text-[20px] leading-none align-middle">
+              <span class="material-symbols-outlined text-2xl">
                 {{ showPassword ? 'visibility_off' : 'visibility' }}
               </span>
             </button>

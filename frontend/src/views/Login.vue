@@ -42,10 +42,13 @@
             />
             <button
               type="button"
-              class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 hover:text-white"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white"
               @click="showPassword = !showPassword"
+              :aria-label="showPassword ? 'Hide password' : 'Show password'"
             >
-              {{ showPassword ? 'Hide' : 'Show' }}
+              <span class="material-symbols-outlined text-[20px] leading-none align-middle">
+                {{ showPassword ? 'visibility_off' : 'visibility' }}
+              </span>
             </button>
           </div>
         </div>

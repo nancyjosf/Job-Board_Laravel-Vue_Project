@@ -3,14 +3,19 @@ import { onMounted, ref, computed } from "vue";
 import { Motion } from "@motionone/vue";
 import { fetchEmployerStats, fetchMyJobs, toggleJobStatus, deleteJob } from "../api/employer";
 
+// State Management
 const stats = ref(null);
 const jobs = ref([]);
 const loading = ref(true);
 
+// تحميل البيانات من الـ API
 const loadDashboardData = async () => {
   loading.value = true;
   try {
-    const [statsData, jobsData] = await Promise.all([fetchEmployerStats(), fetchMyJobs()]);
+    const [statsData, jobsData] = await Promise.all([
+      fetchEmployerStats(), 
+      fetchMyJobs()
+    ]);
     stats.value = statsData;
     jobs.value = jobsData;
   } catch (error) {
@@ -20,21 +25,25 @@ const loadDashboardData = async () => {
   }
 };
 
+// التعامل مع الأزرار (نشر، حذف، أرشفة)
 const handleAction = async (id, action) => {
   try {
     if (action === 'delete') {
       if (confirm('Are you sure you want to delete this job?')) {
         await deleteJob(id);
+      } else {
+        return;
       }
     } else {
       await toggleJobStatus(id, action);
     }
-    await loadDashboardData();
+    await loadDashboardData(); // إعادة تحميل البيانات لتحديث الواجهة
   } catch (error) {
     alert("Action failed. Please try again.");
   }
 };
 
+// تنسيق بيانات الكروت العلوية
 const statCards = computed(() => [
   { label: "Total Jobs", value: stats.value?.total_jobs || 0, color: "text-white" },
   { label: "Published", value: stats.value?.published_jobs || 0, color: "text-indigo-400" },
@@ -46,7 +55,7 @@ onMounted(loadDashboardData);
 </script>
 
 <template>
-  <div class="space-y-10">
+  <div class="space-y-10 pb-20">
     <!-- Header Section -->
     <header class="p-12 rounded-[3rem] border border-white/10 bg-white/[0.02] backdrop-blur-3xl shadow-2xl">
       <h1 class="text-6xl font-[1000] tracking-tighter text-white leading-none">Employer Console</h1>
@@ -70,13 +79,16 @@ onMounted(loadDashboardData);
     </div>
 
     <!-- Management Section -->
-    <section class="bg-white/[0.02] border border-white/5 rounded-[3rem] p-8 md:p-12 backdrop-blur-2xl">
+    <section class="bg-white/[0.02] border border-white/5 rounded-[3rem] p-8 md:p-12 backdrop-blur-2xl shadow-inner">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div>
           <h2 class="text-3xl font-[1000] tracking-tight text-white">Managed Listings</h2>
           <p class="text-white/40 text-sm font-bold mt-1 uppercase tracking-widest">Active Recruitment Campaigns</p>
         </div>
-        <RouterLink to="/employer/jobs/create" class="px-10 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase tracking-widest hover:bg-indigo-500 shadow-lg shadow-indigo-600/20 transition-all active:scale-95 text-center">
+        <RouterLink 
+          to="/employer/jobs/create" 
+          class="px-10 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase tracking-widest hover:bg-indigo-500 shadow-lg shadow-indigo-600/20 transition-all active:scale-95 text-center"
+        >
           Post New Job
         </RouterLink>
       </div>
@@ -98,18 +110,22 @@ onMounted(loadDashboardData);
           
           <div class="flex items-center gap-6">
             <div class="w-14 h-14 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center font-black text-indigo-400 text-xl shadow-inner">
-              {{ job.title ? job.title[0] : 'J' }}
+              {{ job.title ? job.title[0].toUpperCase() : 'J' }}
             </div>
             <div>
               <h4 class="text-xl font-black text-white group-hover:text-indigo-300 transition-colors">{{ job.title }}</h4>
               <div class="flex items-center gap-4 mt-1.5">
-                <span class="px-3 py-1 rounded-lg bg-white/5 text-[9px] font-black uppercase tracking-widest text-indigo-300 border border-white/5">{{ job.status }}</span>
-                <span class="text-[10px] font-bold text-white/20 uppercase tracking-tighter">Views: {{ job.views_count || 0 }}</span>
+                <span class="px-3 py-1 rounded-lg bg-white/5 text-[9px] font-black uppercase tracking-widest text-indigo-300 border border-white/5">
+                  {{ job.status }}
+                </span>
+                <span class="text-[10px] font-bold text-white/20 uppercase tracking-tighter">
+                  Views: {{ job.views_count || 0 }}
+                </span>
               </div>
             </div>
           </div>
 
-          <!-- Actions -->
+          <!-- Actions Buttons -->
           <div class="flex flex-wrap items-center gap-2 mt-6 lg:mt-0">
             <button v-if="job.status === 'published'" @click="handleAction(job.id, 'unpublish')" class="action-btn">Unpublish</button>
             <button v-if="job.status === 'draft' || job.status === 'unpublished'" @click="handleAction(job.id, 'publish')" class="action-btn">Publish</button>
@@ -123,21 +139,15 @@ onMounted(loadDashboardData);
       </div>
     </section>
   </div>
-    </div>
-  </div>
 </template>
 
 <style scoped>
 .action-btn {
   @apply px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-white/50 hover:bg-white/10 hover:text-white transition-all cursor-pointer;
 }
-<<<<<<< HEAD
-
 
 @media (max-width: 768px) {
   header { @apply p-8 rounded-[2rem]; }
   .text-6xl { @apply text-4xl; }
 }
-=======
->>>>>>> c8fb471a7f0cb084156f471403a510cb2092d1e7
 </style>

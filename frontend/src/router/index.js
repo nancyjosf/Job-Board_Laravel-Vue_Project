@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Jobs from "../views/Jobs.vue";
 import JobDetails from "../views/JobDetails.vue";
-
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import Profile from "../views/Profile.vue";
@@ -34,6 +33,13 @@ export const router = createRouter({
       meta: { requiresAuth: true, roles: ["candidate"] },
     },
     {
+      path: "/applications",
+      name: "my-applications",
+      component: () => import("../views/MyApplications.vue"),
+      meta: { requiresAuth: true, roles: ["candidate"] },
+    },
+
+    {
       path: "/employer/dashboard",
       name: "employer-dashboard",
       component: EmployerDashboard,
@@ -46,11 +52,18 @@ export const router = createRouter({
       meta: { requiresAuth: true, roles: ["employer"] },
     },
     {
-      path: "/applications",
-      name: "my-applications",
-      component: () => import("../views/MyApplications.vue"),
-      meta: { requiresAuth: true, roles: ["candidate"] },
+      path: "/employer/jobs/create",
+      name: "create-job",
+      component: () => import("../views/CreateJob.vue"),
+      meta: { requiresAuth: true, roles: ["employer"] },
     },
+    {
+      path: "/employer/jobs/:id/edit",
+      name: "edit-job",
+      component: () => import("../views/EditJob.vue"),
+      meta: { requiresAuth: true, roles: ["employer"] },
+    },
+
     {
       path: "/admin/dashboard",
       name: "admin-dashboard",
@@ -77,40 +90,7 @@ export const router = createRouter({
       meta: { requiresAuth: true },
     },
 
-<<<<<<< HEAD
-
     { path: "/:pathMatch(.*)*", redirect: "/login" },
-
- 
-    { 
-  path: '/employer/jobs/create', 
-  name: 'create-job', 
-  component: () => import('../views/CreateJob.vue'), 
-  meta: { requiresAuth: true, roles: ['employer'] } 
-},
-
-{ 
-  path: '/employer/jobs/:id/edit', 
-  name: 'edit-job', 
-  component: () => import('../views/EditJob.vue'), 
-  meta: { requiresAuth: true, roles: ['employer'] } 
-}
-
-=======
-    {
-      path: "/employer/jobs/create",
-      name: "create-job",
-      component: () => import("../views/CreateJob.vue"),
-      meta: { requiresAuth: true, roles: ["employer"] },
-    },
-    {
-      path: "/employer/jobs/:id/edit",
-      name: "edit-job",
-      component: () => import("../views/EditJob.vue"),
-      meta: { requiresAuth: true, roles: ["employer"] },
-    },
-    { path: "/:pathMatch(.*)*", redirect: "/login" },
->>>>>>> c8fb471a7f0cb084156f471403a510cb2092d1e7
   ],
 });
 

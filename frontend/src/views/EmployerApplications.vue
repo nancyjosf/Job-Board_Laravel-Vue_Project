@@ -48,12 +48,12 @@
 
                 <div>
                   <h2 class="text-3xl font-black tracking-tight text-white">
-                    {{ application.job_listing?.title || application.job_title || 'Untitled Position' }}
+                    {{ application.job?.title || application.job_title || 'Untitled Position' }}
                   </h2>
                   <p class="mt-2 text-white/50 text-lg font-medium">
-                    {{ application.user?.name || application.candidate?.name || 'Unknown Candidate' }}
-                    <span v-if="application.user?.email || application.candidate?.email" class="text-white/25">•</span>
-                    {{ application.user?.email || application.candidate?.email || '' }}
+                    {{ application.candidate?.name || 'Unknown Candidate' }}
+                    <span v-if="application.candidate?.email" class="text-white/25">•</span>
+                    {{ application.candidate?.email || '' }}
                   </p>
                 </div>
 
@@ -127,7 +127,7 @@ const fetchApplications = async () => {
   error.value = '';
 
   try {
-    const response = await http.get('/applications/my');
+  const response = await http.get('/employer/applications');
     applications.value = normalizeApplications(response.data);
   } catch (err) {
     error.value = err?.response?.data?.message || 'Failed to load applications.';

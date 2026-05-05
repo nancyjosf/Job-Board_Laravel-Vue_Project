@@ -46,6 +46,12 @@ export const router = createRouter({
       meta: { requiresAuth: true, roles: ["employer"] },
     },
     {
+      path: "/applications",
+      name: "my-applications",
+      component: () => import("../views/MyApplications.vue"),
+      meta: { requiresAuth: true, roles: ["candidate"] },
+    },
+    {
       path: "/admin/dashboard",
       name: "admin-dashboard",
       component: AdminDashboard,

@@ -42,7 +42,7 @@
               <div class="space-y-5 flex-1">
                 <div class="flex flex-wrap items-center gap-3">
                   <span class="tag-modern">#{{ application.id }}</span>
-                  <span class="tag-modern">{{ application.status || 'pending' }}</span>
+                  <ApplicationStatusBadge :status="application.status || 'pending'" />
                   <span class="tag-modern">{{ formatDate(application.created_at) }}</span>
                 </div>
 
@@ -112,8 +112,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { http } from '../api/http';
+import { onMounted, ref } from 'vue'
+import { http } from '../api/http'
+import ApplicationStatusBadge from '../components/ApplicationStatusBadge.vue'
 
 const applications = ref([]);
 const loading = ref(false);

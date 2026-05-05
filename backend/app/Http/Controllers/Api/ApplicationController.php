@@ -27,11 +27,6 @@ class ApplicationController extends Controller
 
         try {
             $user = $request->user();
-
-            if (! $user) {
-                return response()->json(['message' => 'Unauthenticated.'], 401);
-            }
-
             $data = array_merge($validated, ['candidate_id' => $user->id]);
 
             $application = $this->service->applyToJob($data, $request->file('resume'));
@@ -51,10 +46,6 @@ class ApplicationController extends Controller
     {
         $user = $request->user();
 
-        if (! $user) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
-        }
-
         $applications = Application::with('job')->where('candidate_id', $user->id)->get();
 
         return response()->json($applications);
@@ -63,10 +54,6 @@ class ApplicationController extends Controller
     public function employerApplications(Request $request)
     {
         $user = $request->user();
-
-        if (! $user) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
-        }
 
         $applications = Application::with(['job', 'candidate'])
             ->whereHas('job', function ($q) use ($user) {
@@ -78,35 +65,39 @@ class ApplicationController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
 
-        if (! $user) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            $request->validate([
+                'status' => 'required|in:accepted,rejected',
+            ]);
+
+            $this->service->changeStatus($id, $request->status, $user->id);
+
+            return response()->json([
+                'message' => 'Application status updated to ' . $request->status,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
         }
-
-        $request->validate([
-            'status' => 'required|in:accepted,rejected',
-        ]);
-
-        $this->service->changeStatus($id, $request->status, $user->id);
-
-        return response()->json([
-            'message' => 'Application status updated to ' . $request->status,
-        ]);
     }
 
     public function destroy(Request $request, $id)
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
 
-        if (! $user) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            $this->service->cancelApplication($id, $user->id);
+
+            return response()->json([
+                'message' => 'Application cancelled successfully.',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
         }
-
-        $this->service->cancelApplication($id, $user->id);
-
-        return response()->json([
-            'message' => 'Application cancelled successfully.',
-        ]);
     }
 }

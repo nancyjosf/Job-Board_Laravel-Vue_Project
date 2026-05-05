@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PaymentController;
-
+use App\Http\Controllers\Api\PayPalController;
 function allowedEndpointsByRole(UserRole $role): array
 {
     return match ($role) {
@@ -70,7 +70,7 @@ Route::post('/login', function (Request $request) {
 
     $user = User::where('email', $validated['email'])->first();
 
-    if (! $user || ! Hash::check($validated['password'], $user->password)) {
+    if (!$user || !Hash::check($validated['password'], $user->password)) {
         return response()->json(['message' => 'The provided credentials are incorrect.'], 422);
     }
 
@@ -90,6 +90,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::get('/applications/my', [ApplicationController::class, 'myApplications']);
     Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);
+    Route::post('/paypal/create', [PayPalController::class, 'createOrder']);
+    Route::post('/paypal/capture/{orderId}', [PayPalController::class, 'captureOrder']);
     Route::patch('/applications/{id}/status', [ApplicationController::class, 'updateStatus']);
     Route::get('/user', function (Request $request) {
         return $request->user();

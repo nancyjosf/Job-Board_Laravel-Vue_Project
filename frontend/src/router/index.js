@@ -29,6 +29,19 @@ export const router = createRouter({
     { path: '/profile', name: 'profile', component: Profile, meta: { requiresAuth: true } },
 
     { path: '/:pathMatch(.*)*', redirect: '/login' },
+    { 
+  path: '/employer/jobs/create', 
+  name: 'create-job', 
+  component: () => import('../views/CreateJob.vue'), 
+  meta: { requiresAuth: true, roles: ['employer'] } 
+},
+
+{ 
+  path: '/employer/jobs/:id/edit', 
+  name: 'edit-job', 
+  component: () => import('../views/EditJob.vue'), 
+  meta: { requiresAuth: true, roles: ['employer'] } 
+}
   ],
 })
 

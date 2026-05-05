@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center px-6 py-12">
+  <div class="min-h-screen app-bg flex items-center justify-center px-6 py-12">
     
     <div class="w-full max-w-2xl card-ui p-12 md:p-16">
       
@@ -33,12 +33,21 @@
             Password
           </label>
 
-          <input
-            v-model="password"
-            type="password"
-            placeholder="Enter your password"
-            class="field-ui"
-          />
+          <div class="relative">
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="Enter your password"
+              class="field-ui pr-14"
+            />
+            <button
+              type="button"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 hover:text-white"
+              @click="showPassword = !showPassword"
+            >
+              {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
         </div>
 
         <button
@@ -81,6 +90,7 @@ const router = useRouter();
 
 const email = ref("");
 const password = ref("");
+const showPassword = ref(false);
 const error = ref("");
 
 const redirectPathByRole = {

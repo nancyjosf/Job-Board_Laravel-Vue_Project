@@ -82,17 +82,9 @@ watch(
 </script>
 
 <template>
-  <div class="min-h-screen relative font-['Plus_Jakarta_Sans'] selection:bg-indigo-500/30 text-slate-200">
+  <div class="min-h-screen relative selection:bg-indigo-500/30 text-slate-200">
     
-    <div class="fixed inset-0 z-[-1] overflow-hidden bg-[#020617]">
-      <img 
-        src="https://png.pngtree.com/thumb_back/fh260/background/20230611/pngtree-employees-at-tables-in-this-purple-office-image_2961756.jpg" 
-        class="w-full h-full object-cover scale-100 brightness-[1.4] contrast-[1.1] saturate-[1.1]"
-        alt="Premium Office"
-      />
-      
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#020617]/20 to-[#020617]/80"></div>
-      
+    <div class="fixed inset-0 z-[-1] overflow-hidden app-bg">
       <div class="absolute top-[-10%] left-[-5%] w-[700px] h-[700px] bg-white/5 rounded-full blur-[140px] animate-pulse"></div>
       <div class="absolute bottom-[-5%] right-[-5%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] [animation-duration:12s] animate-bounce"></div>
     </div>
@@ -249,12 +241,4 @@ watch(
 }
 ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
 
-body {
-  background-color: #020617;
-  -webkit-font-smoothing: antialiased;
-}
-input, input:focus {
-  color: white !important;
-  -webkit-text-fill-color: white !important;
-}
 </style>

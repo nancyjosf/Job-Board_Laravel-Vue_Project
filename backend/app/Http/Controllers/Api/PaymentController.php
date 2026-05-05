@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
@@ -13,7 +14,7 @@ class PaymentController extends Controller
         try {
             Stripe::setApiKey(config('services.stripe.secret'));
 
-            $user = $request->user(); 
+            $user = $request->user();
 
             $paymentIntent = PaymentIntent::create([
                 'amount' => 10000,
@@ -27,7 +28,6 @@ class PaymentController extends Controller
             return response()->json([
                 'clientSecret' => $paymentIntent->client_secret
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()

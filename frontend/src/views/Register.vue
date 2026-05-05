@@ -59,12 +59,21 @@
               Password
             </label>
 
-            <input
-              v-model="password"
-              type="password"
-              placeholder="Enter password"
-              class="field-ui"
-            />
+            <div class="relative">
+              <input
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="Enter password"
+                class="field-ui pr-14"
+              />
+              <button
+                type="button"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 hover:text-white"
+                @click="showPassword = !showPassword"
+              >
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
           </div>
 
           <div class="space-y-3">
@@ -72,12 +81,21 @@
               Confirm Password
             </label>
 
-            <input
-              v-model="passwordConfirmation"
-              type="password"
-              placeholder="Confirm password"
-              class="field-ui"
-            />
+            <div class="relative">
+              <input
+                v-model="passwordConfirmation"
+                :type="showPasswordConfirmation ? 'text' : 'password'"
+                placeholder="Confirm password"
+                class="field-ui pr-14"
+              />
+              <button
+                type="button"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 hover:text-white"
+                @click="showPasswordConfirmation = !showPasswordConfirmation"
+              >
+                {{ showPasswordConfirmation ? 'Hide' : 'Show' }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -125,6 +143,8 @@ const role = ref("candidate");
 
 const password = ref("");
 const passwordConfirmation = ref("");
+const showPassword = ref(false);
+const showPasswordConfirmation = ref(false);
 
 const error = ref("");
 

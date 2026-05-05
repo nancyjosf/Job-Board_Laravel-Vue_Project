@@ -86,8 +86,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
-    Route::post('/stripe/intent', [PaymentController::class, 'createStripeIntent']);
+    Route::post('/payment/stripe-intent', [PaymentController::class, 'createStripeIntent']);
     Route::post('/applications', [ApplicationController::class, 'store']);
+    Route::get('/applications', [ApplicationController::class, 'myApplications']);
     Route::get('/applications/my', [ApplicationController::class, 'myApplications']);
     Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);
     Route::patch('/applications/{id}/status', [ApplicationController::class, 'updateStatus']);
@@ -98,6 +99,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('employer')->group(function () {
         Route::get('/stats', [JobController::class, 'stats']);
         Route::get('/jobs', [JobController::class, 'myJobs']);
+        Route::get('/applications', [ApplicationController::class, 'employerApplications']);
         Route::post('/jobs', [JobController::class, 'store']);
         Route::put('/jobs/{job}', [JobController::class, 'update']);
         Route::delete('/jobs/{job}', [JobController::class, 'destroy']);

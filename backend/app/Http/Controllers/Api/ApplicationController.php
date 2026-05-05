@@ -60,6 +60,22 @@ class ApplicationController extends Controller
         return response()->json($applications);
     }
 
+    public function employerApplications(Request $request)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $applications = Application::with(['job', 'candidate'])
+            ->whereHas('job', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->get();
+
+        return response()->json($applications);
+    }
+
     public function updateStatus(Request $request, $id)
     {
         $user = $request->user();

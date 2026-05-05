@@ -128,6 +128,8 @@ onMounted(loadDashboardData);
       </div>
     </section>
   </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -135,4 +137,3 @@ onMounted(loadDashboardData);
   @apply px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/70 hover:bg-white/10 hover:text-white transition-all cursor-pointer;
 }
 </style>
-```

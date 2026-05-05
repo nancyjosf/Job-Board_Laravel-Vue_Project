@@ -77,24 +77,19 @@ export const router = createRouter({
       meta: { requiresAuth: true },
     },
 
-<<<<<<< HEAD
+    {
+      path: "/employer/jobs/create",
+      name: "create-job",
+      component: () => import("../views/CreateJob.vue"),
+      meta: { requiresAuth: true, roles: ["employer"] },
+    },
+    {
+      path: "/employer/jobs/:id/edit",
+      name: "edit-job",
+      component: () => import("../views/EditJob.vue"),
+      meta: { requiresAuth: true, roles: ["employer"] },
+    },
     { path: "/:pathMatch(.*)*", redirect: "/login" },
-=======
-    { path: '/:pathMatch(.*)*', redirect: '/login' },
-    { 
-  path: '/employer/jobs/create', 
-  name: 'create-job', 
-  component: () => import('../views/CreateJob.vue'), 
-  meta: { requiresAuth: true, roles: ['employer'] } 
-},
-
-{ 
-  path: '/employer/jobs/:id/edit', 
-  name: 'edit-job', 
-  component: () => import('../views/EditJob.vue'), 
-  meta: { requiresAuth: true, roles: ['employer'] } 
-}
->>>>>>> employer-module-frontend
   ],
 });
 

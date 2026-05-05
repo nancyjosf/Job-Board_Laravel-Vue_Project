@@ -1,6 +1,3 @@
-تفضلي يا وسام، هذا هو الكود الكامل لملف `App.vue` بدون أي تعليقات. قمت بتفعيل زر **Post a Job** ورابط **Dashboard**، وتعديل اللوجو ليوجهك للوحة التحكم مباشرة إذا كنتِ مسجلة كصاحب عمل، لضمان تجربة مستخدم احترافية متكاملة[cite: 13, 26, 28].
-
-```vue
 <script setup>
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -64,6 +61,7 @@ const logout = async () => {
   try {
     await http.post("/logout");
   } catch {
+    // Silent catch
   } finally {
     localStorage.removeItem("token");
     localStorage.removeItem("user_role");
@@ -86,6 +84,7 @@ watch(
 <template>
   <div class="min-h-screen relative font-['Plus_Jakarta_Sans'] selection:bg-indigo-500/30 text-slate-200">
     
+    <!-- Background Elements -->
     <div class="fixed inset-0 z-[-1] overflow-hidden bg-[#020617]">
       <img 
         src="https://png.pngtree.com/thumb_back/fh260/background/20230611/pngtree-employees-at-tables-in-this-purple-office-image_2961756.jpg" 
@@ -94,9 +93,10 @@ watch(
       />
       <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#020617]/20 to-[#020617]/80"></div>
       <div class="absolute top-[-10%] left-[-5%] w-[700px] h-[700px] bg-white/5 rounded-full blur-[140px] animate-pulse"></div>
-      <div class="absolute bottom-[-5%] right-[-5%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] [animation-duration:12s] animate-bounce"></div>
+      <div class="absolute bottom-[-5%] right-[-5%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] animate-bounce"></div>
     </div>
 
+    <!-- Header -->
     <header class="sticky top-0 z-50 border-b border-white/[0.05] bg-white/[0.01] backdrop-blur-3xl transition-all duration-500">
       <div class="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-between">
         
@@ -116,80 +116,43 @@ watch(
         </RouterLink>
 
         <nav v-if="!isAuthPage || isAuthenticated" class="hidden lg:flex items-center gap-1 bg-black/20 p-1.5 rounded-2xl border border-white/5 backdrop-blur-2xl">
-          <RouterLink 
-            to="/" 
-            class="px-12 py-2.5 rounded-xl text-sm font-black bg-white text-slate-950 shadow-2xl transition-all duration-500"
-          >
+          <RouterLink to="/" class="px-12 py-2.5 rounded-xl text-sm font-black bg-white text-slate-950 shadow-2xl transition-all duration-500">
             Explore Jobs
           </RouterLink>
 
-          
           <!-- Candidate Navigation -->
-          <RouterLink
-            v-if="isAuthenticated && currentUser?.role === 'candidate'"
-            to="/applications"
-            class="px-6 py-2.5 rounded-xl text-sm font-black text-white hover:bg-white/10 transition-all duration-300"
-          >
+          <RouterLink v-if="isAuthenticated && currentUser?.role === 'candidate'" to="/applications" class="px-6 py-2.5 rounded-xl text-sm font-black text-white hover:bg-white/10 transition-all duration-300">
             My Applications
           </RouterLink>
           
           <!-- Employer Navigation -->
-          <RouterLink
-            v-if="isAuthenticated && currentUser?.role === 'employer'"
-            to="/employer/applications"
-            class="px-6 py-2.5 rounded-xl text-sm font-black text-white hover:bg-white/10 transition-all duration-300"
-          >
+          <RouterLink v-if="isAuthenticated && currentUser?.role === 'employer'" to="/employer/applications" class="px-6 py-2.5 rounded-xl text-sm font-black text-white hover:bg-white/10 transition-all duration-300">
             Review Applications
+          </RouterLink>
 
-          <RouterLink 
-            v-if="currentUser?.role === 'employer'"
-            to="/employer/dashboard" 
-            class="px-12 py-2.5 rounded-xl text-sm font-black text-white hover:bg-white/5 transition-all duration-500"
-          >
+          <RouterLink v-if="currentUser?.role === 'employer'" to="/employer/dashboard" class="px-12 py-2.5 rounded-xl text-sm font-black text-white hover:bg-white/5 transition-all duration-500">
             Dashboard
-
           </RouterLink>
         </nav>
 
         <div class="flex items-center gap-4">
-          <RouterLink
-            v-if="isAuthenticated && currentUser"
-            to="/profile"
-            class="hidden md:flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-2 backdrop-blur-2xl"
-          >
+          <RouterLink v-if="isAuthenticated && currentUser" to="/profile" class="hidden md:flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-2 backdrop-blur-2xl">
             <div class="w-10 h-10 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center text-sm font-black text-white">
-              <img
-                v-if="currentUser.image"
-                :src="imageUrl(currentUser.image)"
-                class="w-full h-full object-cover"
-                alt="Profile"
-              />
+              <img v-if="currentUser.image" :src="imageUrl(currentUser.image)" class="w-full h-full object-cover" alt="Profile" />
               <span v-else>{{ currentUser?.name?.[0] || "U" }}</span>
             </div>
             <span class="text-sm font-bold text-white/90">{{ currentUser.name }}</span>
           </RouterLink>
 
-          <RouterLink
-            v-if="!isAuthenticated"
-            :to="authActionPath"
-            class="hidden md:block text-sm font-bold text-slate-400 hover:text-white transition-all hover:tracking-widest uppercase"
-          >
+          <RouterLink v-if="!isAuthenticated" :to="authActionPath" class="hidden md:block text-sm font-bold text-slate-400 hover:text-white transition-all hover:tracking-widest uppercase">
             {{ authActionLabel }}
           </RouterLink>
 
-          <button
-            v-else
-            @click="logout"
-            class="hidden md:block text-sm font-bold text-slate-400 hover:text-white transition-all hover:tracking-widest uppercase"
-          >
+          <button v-else @click="logout" class="hidden md:block text-sm font-bold text-slate-400 hover:text-white transition-all hover:tracking-widest uppercase">
             Logout
           </button>
 
-          <RouterLink
-            v-if="isAuthenticated && currentUser?.role === 'employer'"
-            to="/employer/jobs/create"
-            class="relative group px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 transition-all hover:scale-105 active:scale-95 shadow-[0_20px_40px_-10px_rgba(79,70,229,0.5)]"
-          >
+          <RouterLink v-if="isAuthenticated && currentUser?.role === 'employer'" to="/employer/jobs/create" class="relative group px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 transition-all hover:scale-105 active:scale-95 shadow-[0_20px_40px_-10px_rgba(79,70,229,0.5)]">
             <span class="text-white font-black text-sm tracking-wide uppercase">Post a Job</span>
           </RouterLink>
         </div>
@@ -217,10 +180,7 @@ watch(
             </p>
           </div>
 
-          <div v-for="col in [
-            { title: 'Platform', links: ['Browse Jobs', 'Companies', 'Pricing', 'API'] },
-            { title: 'Support', links: ['Help Center', 'Privacy', 'Terms', 'Security'] }
-          ]" :key="col.title">
+          <div v-for="col in [{ title: 'Platform', links: ['Browse Jobs', 'Companies', 'Pricing', 'API'] }, { title: 'Support', links: ['Help Center', 'Privacy', 'Terms', 'Security'] }]" :key="col.title">
             <h4 class="text-white font-bold text-xs uppercase tracking-[0.3em] mb-8">{{ col.title }}</h4>
             <ul class="space-y-4">
               <li v-for="item in col.links" :key="item">
@@ -263,15 +223,6 @@ watch(
   filter: blur(5px);
 }
 
-.results-text, 
-[class*="results-discovered"] {
-  font-size: 1.25rem !important; 
-  font-weight: 900 !important;
-  letter-spacing: 0.3em !important;
-  color: #818cf8 !important; 
-  text-transform: uppercase;
-}
-
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #020617; }
 ::-webkit-scrollbar-thumb { 
@@ -284,9 +235,4 @@ body {
   background-color: #020617;
   -webkit-font-smoothing: antialiased;
 }
-input, input:focus {
-  color: white !important;
-  -webkit-text-fill-color: white !important;
-}
 </style>
-```

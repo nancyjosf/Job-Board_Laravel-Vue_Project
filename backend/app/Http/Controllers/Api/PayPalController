@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Controller;
+
+class PayPalController extends Controller
+{
+    public function createOrder(Request $request)
+    {
+
+        $response = Http::withBasicAuth(
+            config('services.paypal.client_id'),
+            config('services.paypal.secret')
+        )->asForm()->post(config('services.paypal.base_url') . '/v1/oauth2/token', [
+            'grant_type' => 'client_credentials'
+        ]);
+
+        $accessToken = $response['access_token'];
+
+        $order = Http::withToken($accessToken)
+            ->post(config('services.paypal.base_url') . '/v2/checkout/orders', [
+                'intent' => 'CAPTURE',
+                'purchase_units' => [[
+                    'amount' => [
+                        'currency_code' => 'USD',
+                        'value' => '10.00'
+                    ]
+                ]]
+            ]);
+
+        return response()->json($order->json());
+    }
+
+    public function captureOrder($orderId)
+    {
+        $response = Http::withBasicAuth(
+            config('services.paypal.client_id'),
+            config('services.paypal.secret')
+        )->asForm()->post(config('services.paypal.base_url') . '/v1/oauth2/token', [
+            'grant_type' => 'client_credentials'
+        ]);
+
+        $accessToken = $response['access_token'];
+
+        $capture = Http::withToken($accessToken)
+            ->post(config('services.paypal.base_url') . "/v2/checkout/orders/{$orderId}/capture");
+
+        return response()->json($capture->json());
+    }
+}

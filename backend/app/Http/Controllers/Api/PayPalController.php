@@ -17,6 +17,7 @@ class PayPalController extends Controller
         )->asForm()->post(config('services.paypal.base_url') . '/v1/oauth2/token', [
             'grant_type' => 'client_credentials'
         ]);
+       return response()->json($response->json());
 
         $accessToken = $response['access_token'];
 

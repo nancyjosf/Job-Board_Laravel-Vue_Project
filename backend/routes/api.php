@@ -82,6 +82,10 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
+
+    Route::post('/paypal/create', [PayPalController::class, 'createOrder']);
+    Route::post('/paypal/capture/{orderId}', [PayPalController::class, 'captureOrder']);
+    
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
@@ -91,8 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/applications', [ApplicationController::class, 'myApplications']);
     Route::get('/applications/my', [ApplicationController::class, 'myApplications']);
     Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);
-    Route::post('/paypal/create', [PayPalController::class, 'createOrder']);
-    Route::post('/paypal/capture/{orderId}', [PayPalController::class, 'captureOrder']);
+
     Route::patch('/applications/{id}/status', [ApplicationController::class, 'updateStatus']);
     Route::get('/user', function (Request $request) {
         return $request->user();

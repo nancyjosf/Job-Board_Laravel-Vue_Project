@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Category;
-
+use App\Models\Comment;
 class JobListing extends Model
 {
     /** @use HasFactory<\Database\Factories\JobListingFactory> */
@@ -70,5 +70,9 @@ class JobListing extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
+    }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

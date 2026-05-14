@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PayPalController;
+use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\CommentController;
 function allowedEndpointsByRole(UserRole $role): array
 {
     return match ($role) {
@@ -82,12 +84,20 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
+// Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 
-    Route::post('/paypal/create', [PayPalController::class, 'createOrder']);
+    Route::get('/dashboard', [AdminController::class, 'dashboard']);
+    Route::patch('/jobs/{job}/approve', [AdminController::class, 'approveJob']);
+    Route::patch('/jobs/{job}/reject',[AdminController::class,'rejectJob']);
+
+// });
+
     Route::post('/paypal/capture/{orderId}', [PayPalController::class, 'captureOrder']);
-    
-Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/paypal/create', [PayPalController::class, 'createOrder']);
+     Route::post('/comments', [CommentController::class, 'store']);
 
+Route::middleware('auth:sanctum')->group(function () {
+   
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/payment/stripe-intent', [PaymentController::class, 'createStripeIntent']);

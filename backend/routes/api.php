@@ -86,18 +86,23 @@ Route::post('/login', function (Request $request) {
 
 // Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 
-    Route::get('/dashboard', [AdminController::class, 'dashboard']);
-    Route::patch('/jobs/{job}/approve', [AdminController::class, 'approveJob']);
-    Route::patch('/jobs/{job}/reject',[AdminController::class,'rejectJob']);
+Route::get('/dashboard', [AdminController::class, 'dashboard']);
+Route::patch('/jobs/{job}/approve', [AdminController::class, 'approveJob']);
+Route::patch('/jobs/{job}/reject', [AdminController::class, 'rejectJob']);
+Route::delete('/comments/{id}',[CommentController::class,'destroy']); 
+Route::get('/users', [AdminController::class, 'users']);  
+Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
+Route::get('/analytics', [AdminController::class, 'analytics']);
 
 // });
 
-    Route::post('/paypal/capture/{orderId}', [PayPalController::class, 'captureOrder']);
-    Route::post('/paypal/create', [PayPalController::class, 'createOrder']);
-     Route::post('/comments', [CommentController::class, 'store']);
+Route::post('/paypal/capture/{orderId}', [PayPalController::class, 'captureOrder']);
+Route::post('/paypal/create', [PayPalController::class, 'createOrder']);
+Route::post('/comments', [CommentController::class, 'store']);
+Route::get('/jobs/{jobId}/comments',[CommentController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
-   
+
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/payment/stripe-intent', [PaymentController::class, 'createStripeIntent']);

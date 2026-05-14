@@ -14,7 +14,7 @@ class CommentController extends Controller
             'content' => 'required|string|max:255'
         ]);
         $comment = Comment::create([
-            'user_id'=>auth()->id(),
+            'user_id' => auth()->id(),
             'job_listing_id' => $validated['job_listing_id'],
             'content' => $validated['content'],
         ]);
@@ -23,5 +23,20 @@ class CommentController extends Controller
             'comment' => $comment->load('user:id,name'),
         ]);
 
+    }
+    public function index($jobId)
+    {
+        $comments = Comment::with('user:id,name')->where('job_listing_id', $jobId)->latest()->get();
+        return response()->json($comments);
+    }
+    public function destroy($id)
+    {
+        $comment=Comment::find($id);
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+
+        $comment->delete();
+        return response()->json(['message'=>'Comment deleted sucessfully']);
     }
 }
